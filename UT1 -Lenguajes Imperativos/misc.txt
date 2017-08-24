@@ -1,0 +1,15 @@
+Cosas que hay que preguntar.
+  - Paso Base sobre Recursividad
+  - Salto de linea
+
+Cosas para hacer
+  - Optimizacion de parentesis
+  - Agregar Excepciones
+    - WhileSyntaxException.
+        -AExpException.
+        -BExpException.
+        -StmtException.
+    - VariableNotDeclaredException.
+  Implementar Exceptiones en:
+    metodo constructor
+    eval.
