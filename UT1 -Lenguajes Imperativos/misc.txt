@@ -1,15 +1,11 @@
-Cosas que hay que preguntar.
+Cosas que hay que preguntar
+  - Paso de String en Tipo Num y TruthValue.
   - Paso Base sobre Recursividad
   - Salto de linea
+  - Variables cuando la declaro ya la reservo en el diccionario?
 
 Cosas para hacer
-  - Optimizacion de parentesis
-  - Agregar Excepciones
-    - WhileSyntaxException.
-        -AExpException.
-        -BExpException.
-        -StmtException.
-    - VariableNotDeclaredException.
+
   Implementar Exceptiones en:
-    metodo constructor
-    eval.
+    -metodo constructor
+    -eval.

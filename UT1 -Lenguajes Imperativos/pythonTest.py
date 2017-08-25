@@ -1,4 +1,5 @@
 from InterpreteWhile import *
+from WhileExceptions import *
 
 def test1():
     a=Num(5)

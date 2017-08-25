@@ -1,3 +1,6 @@
+from WhileExceptions import *
+
+
 ######### DATA STRUCTURES #####################
 #                                             #
 # Data structures needed for the interperter. #
@@ -41,12 +44,18 @@ class Num(AExp):
 
     #constructor2
     def __init__(self, value):
+        if(not (type(value) in [float,int])):
+            raise AExpException("Value is not a numerical value.\n");
         self.value = value
 
     def __str__(self):
+        if(not (type(self.value) in [float,int])):
+            raise AExpException('{} is not a numerical value'.format(self.value));
         return str(self.value)
 
     def eval(self):
+        if(not (type(self.value) in [float,int])):
+            raise AExpException('{} is not a numerical value'.format(self.value));
         return self.value
 
 class Var(AExp):
@@ -177,9 +186,19 @@ class Neg(BExp):
         def eval(self):
             return not(self.op1.eval())
 
+class Skip(Stmt):
+    def __init__(self):
+        pass
+    def __str__(self):
+        return "Skip"
+    def eval(self):
+        pass
+
+
 class While(Stmt):
     cond=False
-    DO=""
+
+    DO=Skip()
 
     def __init__(self, cond, DO):
         self.DO = DO
@@ -191,14 +210,6 @@ class While(Stmt):
     def eval(self):
         while(self.cond.eval()):
             self.DO.eval()
-
-class Skip(Stmt):
-    def __init__(self):
-        pass
-    def __str__(self):
-        return "Skip"
-    def eval(self):
-        return
 
 class Concat(Stmt):
 
