@@ -74,11 +74,8 @@ class Sum(AExp):
         return self.op1.eval() + self.op2.eval()
 
     def __str__(self):
-        return str("("
-                   + str(self.op1)
-                   + "+"
-                   + str(self.op2)
-                   + ")")
+        return '({} + {})'.format(str(self.op1),str(self.op2))
+
 
 
 class Mul(AExp):
@@ -93,11 +90,7 @@ class Mul(AExp):
         return self.op1.eval() * self.op2.eval()
 
     def __str__(self):
-        return str("("
-                   + str(self.op1)
-                   + "*"
-                   + str(self.op2)
-                   + ")")
+        return '({} * {})'.format(str(self.op1),str(self.op2))
 
 
 class Sub(AExp):
@@ -112,12 +105,7 @@ class Sub(AExp):
         return self.op1.eval() - self.op2.eval()
 
     def __str__(self):
-        return str("("
-                   + str(self.op1)
-                   + "-"
-                   + str(self.op2)
-                   + ")")
-
+        return '({} - {})'.format(str(self.op1),str(self.op2))
 
 class TruthValue(BExp):
     value = False
@@ -142,11 +130,8 @@ class Equal(BExp):
         self.op2 = op2
 
     def __str__(self):
-        return str("("
-                   + str(self.op1)
-                   + "="
-                   + str(self.op2)
-                   + ")")
+        return '({} = {})'.format(str(self.op1),str(self.op2))
+
 
     def eval(self):
         return (self.op1.eval()) == (self.op2.eval())
@@ -159,11 +144,8 @@ class LowEq(BExp):
             self.op2 = op2
 
         def __str__(self):
-            return str("("
-                       + str(self.op1)
-                       + "<="
-                       + str(self.op2)
-                       + ")")
+            return '({} <= {})'.format(str(self.op1),str(self.op2))
+
 
         def eval(self):
             return (self.op1.eval()) <= (self.op2.eval())
@@ -176,11 +158,8 @@ class And(BExp):
             self.op2 = op2
 
         def __str__(self):
-            return str("("
-                       + str(self.op1)
-                       + "&"
-                       + str(self.op2)
-                       + ")")
+            return '({} and {})'.format(str(self.op1),str(self.op2))
+
 
         def eval(self):
             return (self.op1.eval()) and (self.op2.eval())
@@ -192,9 +171,8 @@ class Neg(BExp):
             self.op1=op1
 
         def __str__(self):
-            return str("(¬"
-                       + str(self.op1)
-                       + ")")
+            return '¬({})'.format(str(self.op1))
+
 
         def eval(self):
             return not(self.op1.eval())
@@ -208,10 +186,7 @@ class While(Stmt):
         self.cond = cond
 
     def __str__(self):
-        return str("( While "
-                   +str(self.cond)
-                   +" do ("+str(self.DO)
-                   +"))")
+        return 'while ({}) do ({})'.format(str(self.cond),str(self.DO))
 
     def eval(self):
         while(self.cond.eval()):
@@ -236,11 +211,9 @@ class Concat(Stmt):
     def eval(self):
         self.s1.eval()
         self.s2.eval()
-        
+
     def __str__(self):
-        return str(str(self.s1)
-                   +" ; "
-                   +str(self.s2))
+        return '({} ; {})'.format(str(self.s1),str(self.s2))
 
 class If(Stmt):
     cond = False
@@ -256,12 +229,7 @@ class If(Stmt):
         self.cond = cond
 
     def __str__(self):
-        return str("(if "
-                   +str(self.cond)
-                   +" then "
-                   +str(self.s1)
-                   +" else "
-                   +str(self.s2)+")")
+        return 'if {} then ({}) else ({})'.format(str(self.cond),str(self.s1),str(self.s2))
 
     def eval(self):
         if(self.cond.eval()):
@@ -277,11 +245,8 @@ class Assignment(Stmt):
         self.op2 = op2
 
     def __str__(self):
-        return str("("
-                   +str(self.op1)
-                   +":="
-                   +str(self.op2)
-                   +")")
+        return '{} := {}'.format(str(self.op1),str(self.op2))
+
 
     def eval(self):
         state[str(self.op1)] = self.op2.eval()
