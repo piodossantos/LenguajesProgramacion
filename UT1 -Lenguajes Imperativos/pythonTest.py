@@ -41,3 +41,4 @@ def test2():
 
 
 ##PROGRAMA Principal
+test2()
