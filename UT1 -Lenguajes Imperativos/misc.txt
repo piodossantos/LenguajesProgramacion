@@ -3,6 +3,7 @@ Cosas que hay que preguntar
   - Paso Base sobre Recursividad
   - Salto de linea
   - Variables cuando la declaro ya la reservo en el diccionario?
+  - Consultar While e IF.
 
 Cosas para hacer
 

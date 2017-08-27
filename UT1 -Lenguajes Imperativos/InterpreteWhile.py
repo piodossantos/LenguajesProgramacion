@@ -19,7 +19,6 @@ class AExp:
     def __repr__(self):
         return str(self)
 
-
 class BExp:
 
     #constructor
@@ -28,6 +27,7 @@ class BExp:
 
     def __repr__(self):
         return str(self)
+
 class Stmt:
 
     #constructor
@@ -37,12 +37,12 @@ class Stmt:
     def __repr__(self):
         return str(self)
 
-#ToDo: Hay que seguir agregando los prints para cada tipo
+#Sub classes
 
 class Num(AExp):
+
     value = 0
 
-    #constructor2
     def __init__(self, value):
         if(not (type(value) in [float,int])):
             raise AExpException("Value is not a numerical value.\n");
@@ -63,12 +63,18 @@ class Var(AExp):
 
     #constructor
     def __init__(self, name):
+        if(type(name) not in [chr,str]):
+            raise AExpException('{} is not a char/String value'.format(name))
         self.name = name
 
     def __str__(self):
+        if(type(self.name) not in [chr,str]):
+            raise AExpException('{} is not a char/String value'.format(self.name))
         return str(self.name)
 
     def eval(self):
+        if(type(self.name) not in [chr,str]):
+            raise AExpException('{} is not a char/String value'.format(self.name))
         return state.get(self.name,0)
 
 class Sum(AExp):
@@ -76,6 +82,10 @@ class Sum(AExp):
 
     #constructor
     def __init__(self, op1, op2):
+        if(type(op1) not in [AExp]):
+            raise AExpException('op1 = {} is not a AExp Value'.format(op1))
+        if(type(op2)!=AExp):
+            raise AExpException('op2 = {} is not a AExp Value'.format(op2))
         self.op1 = op1
         self.op2 = op2
 
@@ -85,9 +95,8 @@ class Sum(AExp):
     def __str__(self):
         return '({} + {})'.format(str(self.op1),str(self.op2))
 
-
-
 class Mul(AExp):
+
     op1, op2 = 0, 0
 
     #constructor
@@ -101,8 +110,8 @@ class Mul(AExp):
     def __str__(self):
         return '({} * {})'.format(str(self.op1),str(self.op2))
 
-
 class Sub(AExp):
+
     op1, op2 = 0, 0
 
     #constructor
@@ -117,6 +126,7 @@ class Sub(AExp):
         return '({} - {})'.format(str(self.op1),str(self.op2))
 
 class TruthValue(BExp):
+
     value = False
 
     #constructor
@@ -132,6 +142,7 @@ class TruthValue(BExp):
         return "ff"
 
 class Equal(BExp):
+
     op1, op2 = False, False
 
     def __init__(self,op1,op2):
@@ -146,6 +157,7 @@ class Equal(BExp):
         return (self.op1.eval()) == (self.op2.eval())
 
 class LowEq(BExp):
+
         op1, op2 = False, False
 
         def __init__(self,op1,op2):
@@ -160,6 +172,7 @@ class LowEq(BExp):
             return (self.op1.eval()) <= (self.op2.eval())
 
 class And(BExp):
+
         op1, op2 = False, False
 
         def __init__(self,op1,op2):
@@ -174,6 +187,7 @@ class And(BExp):
             return (self.op1.eval()) and (self.op2.eval())
 
 class Neg(BExp):
+
         op1=False
 
         def __init__(self,op1):
@@ -187,15 +201,18 @@ class Neg(BExp):
             return not(self.op1.eval())
 
 class Skip(Stmt):
+
     def __init__(self):
-        pass
+        ...
+
     def __str__(self):
         return "skip"
-    def eval(self):
-        pass
 
+    def eval(self):
+        ...
 
 class While(Stmt):
+
     cond=False
 
     DO=Skip()
@@ -209,7 +226,7 @@ class While(Stmt):
 
     def eval(self):
         s1= Concat(self.DO,self)
-        resultado=If(s1,Skip(),self.cond)
+        resultado = If(s1,Skip(),self.cond)
         resultado.eval()
 
 class Concat(Stmt):
