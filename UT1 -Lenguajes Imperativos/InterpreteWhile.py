@@ -19,8 +19,8 @@ class AExp:
     def __repr__(self):
         return str(self)
 
-    def get_class(self):
-        return 'AExp'
+    ##def get_class(self):
+##        return 'AExp'
 
 class BExp:
 
@@ -31,8 +31,8 @@ class BExp:
     def __repr__(self):
         return str(self)
 
-    def get_class(self):
-        return 'BExp'
+    ##def get_class(self):
+        ##return 'BExp'
     
 class Stmt:
 
@@ -88,11 +88,11 @@ class Sum(AExp):
 
     #constructor
     def __init__(self, op1, op2):
-        if(op1.get_class() != "AExp"):
-            raise AExpException('op1 = {} is not a Num Value'.format(op1))
+        if(type(op1).__name__ != "AExp"):
+            raise AExpException('op1 = {} is not a AExp Value'.format(op1))
         
-        if(op2.get_class()  != "AExp"):
-            raise AExpException('op1 = {} is not a Var Value'.format(op2))
+        if(type(op2).__name__  != "AExp"):
+            raise AExpException('op1 = {} is not a AExp Value'.format(op2))
 
         self.op1 = op1
         self.op2 = op2
@@ -109,11 +109,11 @@ class Mul(AExp):
 
     #constructor
     def __init__(self, op1, op2):
-        if(op1.get_class() != "AExp"):
-            raise AExpException('op1 = {} is not a Num Value'.format(op1))
+        if(type(op1).__name__ != "AExp"):
+            raise AExpException('op1 = {} is not a AExp Value'.format(op1))
         
-        if(op2.get_class()  != "AExp"):
-            raise AExpException('op1 = {} is not a Var Value'.format(op2))
+        if(type(op2).__name__  != "AExp"):
+            raise AExpException('op2 = {} is not a AExp Value'.format(op2))
         
         self.op1 = op1
         self.op2 = op2
@@ -130,11 +130,11 @@ class Sub(AExp):
 
     #constructor
     def __init__(self, op1, op2):
-        if(op1.get_class() != "AExp"):
+        if(type(op1).__name__  != "AExp"):
             raise AExpException('op1 = {} is not a Num Value'.format(op1))
         
-        if(op2.get_class()  != "AExp"):
-            raise AExpException('op1 = {} is not a Var Value'.format(op2))
+        if(type(op2).__name__   != "AExp"):
+            raise AExpException('op2 = {} is not a Var Value'.format(op2))
         
         self.op1 = op1
         self.op2 = op2
@@ -152,7 +152,7 @@ class TruthValue(BExp):
     #constructor
     def __init__(self,value):
         
-        if(value.get_class()  != "BExp"):
+        if(type(value).__name__   != "BExp"):
             raise BExpException('value = {} is not a BExp Value'.format(value))
         
         self.value = value
@@ -170,10 +170,10 @@ class Equal(BExp):
     op1, op2 = False, False
 
     def __init__(self,op1,op2):
-        if(op1.get_class() != "BExp"):
+        if(type(op1).__name__  != "BExp"):
             raise AExpException('op1 = {} is not a BExp Value'.format(op1))
         
-        if(op2.get_class()  != "BExp"):
+        if(type(op2).__name__   != "BExp"):
             raise AExpException('op2 = {} is not a BExp Value'.format(op2))
         
         self.op1 = op1
@@ -218,7 +218,7 @@ class And(BExp):
 
 class Neg(BExp):
 
-        op1=False
+        op1 = False
 
         def __init__(self,op1):
             self.op1=op1
