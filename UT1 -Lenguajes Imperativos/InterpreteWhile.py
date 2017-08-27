@@ -190,7 +190,7 @@ class Skip(Stmt):
     def __init__(self):
         pass
     def __str__(self):
-        return "Skip"
+        return "skip"
     def eval(self):
         pass
 
@@ -208,8 +208,9 @@ class While(Stmt):
         return 'while ({}) do ({})'.format(str(self.cond),str(self.DO))
 
     def eval(self):
-        while(self.cond.eval()):
-            self.DO.eval()
+        s1= Concat(self.DO,self)
+        resultado=If(s1,Skip(),self.cond)
+        resultado.eval()
 
 class Concat(Stmt):
 
@@ -233,10 +234,6 @@ class If(Stmt):
     def __init__(self, s1, s2, cond):
         self.s1 = s1
         self.s2 = s2
-        self.cond = cond
-
-    def __init__(self, s1, cond):
-        self.s1 = s1
         self.cond = cond
 
     def __str__(self):

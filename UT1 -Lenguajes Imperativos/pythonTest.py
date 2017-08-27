@@ -15,10 +15,10 @@ def test2():
     ## Este programa recibe dos numeros,
     ## lo q hace es mientras a>b resta 1 a a y suma 1 a b.
 
-    a=Num(8)
-    b=Num(2)
-    c=Var("fruta1")
-    d=Var("fruta2")
+    a=Num(410)
+    b=Num(-103)
+    c=Var("VARIABLE_1")
+    d=Var("VARIABLE_2")
     e=Assignment(c,a)
     f=Assignment(d,b)
     g=Concat(e,f)
