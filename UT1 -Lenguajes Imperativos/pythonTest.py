@@ -15,8 +15,8 @@ def test2():
     ## Este programa recibe dos numeros,
     ## lo q hace es mientras a>b resta 1 a a y suma 1 a b.
 
-    a=Num(410)
-    b=Num(-103)
+    a=Num("8383.78")
+    b=Num(-6.5)
     c=Var("VARIABLE_1")
     d=Var("VARIABLE_2")
     e=Assignment(c,a)
@@ -40,6 +40,11 @@ def test2():
     o.eval()
     print(state)
 
-
+def test3():
+    a=And(TruthValue(True),TruthValue("false"))
+    print(a)
+    print(a.eval())
 ##PROGRAMA Principal
+test1()
 test2()
+test3()

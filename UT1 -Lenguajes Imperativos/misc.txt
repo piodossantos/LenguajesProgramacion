@@ -3,10 +3,9 @@ Cosas que hay que preguntar
   - Paso Base sobre Recursividad
   - Salto de linea
   - Variables cuando la declaro ya la reservo en el diccionario?
+  - Las variables no almacenan
   - Consultar While e IF.
 
 Cosas para hacer
-
-  Implementar Exceptiones en:
-    -metodo constructor
-    -eval.
+  - testear.
+  - documentar.
