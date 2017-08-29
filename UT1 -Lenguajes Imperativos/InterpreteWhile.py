@@ -10,9 +10,6 @@ class AExp:
     def __repr__(self):
         return self.__str__()
 
-    ##def get_class(self):
-##        return 'AExp'
-
 class BExp:
 
     #constructor
@@ -22,8 +19,6 @@ class BExp:
     def __repr__(self):
         return self.__str__()
 
-    ##def get_class(self):
-        ##return 'BExp'
 
 class Stmt:
 
@@ -34,7 +29,7 @@ class Stmt:
     def __repr__(self):
         return self.__str__()
 
-#Sub classes
+
 
 class Num(AExp):
 
@@ -43,7 +38,7 @@ class Num(AExp):
     def __init__(self, value):
         temp=str(value).lstrip('-').replace(".","",1)
         if(not (temp.isnumeric())):
-            raise NumException('Value = {} is not a numerical value.'.format(value));
+            raise WhileSyntaxException('Value = {} is not a numerical value.'.format(value));
         self.value = float(value)
 
     def __str__(self):
@@ -59,7 +54,7 @@ class Var(AExp):
     #constructor
     def __init__(self, name):
         if(type(name) not in [chr,str]):
-            raise VarException('{} is not a char/String value'.format(name))
+            raise WhileSyntaxException('{} is not a char/String value'.format(name))
         AExp.__init__(self)
         self.name = name
 
@@ -78,10 +73,10 @@ class Sum(AExp):
 
     #constructor
     def __init__(self, op1, op2):
-        if (not (isinstance(op1,AExp) or isinstance(op1,Num) or isinstance(op1,Var))):
+        if (not isinstance(op1,AExp)):
             raise WhileSyntaxException('op1 = {} is not a AExp,Var or Num Value'.format(op1))
 
-        if (not (isinstance(op2,AExp) or isinstance(op2,Num) or isinstance(op2,Var))):
+        if (not isinstance(op2,AExp) ):
             raise WhileSyntaxException('op2 = {} is not a AExp,Var or Num Value'.format(op2))
 
         self.op1 = op1
@@ -99,10 +94,10 @@ class Mul(AExp):
 
     #constructor
     def __init__(self, op1, op2):
-        if (not (isinstance(op1,AExp) or isinstance(op1,Num) or isinstance(op1,Var))):
+        if (not isinstance(op1,AExp)):
             raise AExpException('op1 = {} is not a AExp,Var or Num Value'.format(op1))
 
-        if (not (isinstance(op2,AExp) or isinstance(op2,Num) or isinstance(op2,Var))):
+        if (not isinstance(op2,AExp)):
             raise AExpException('op2 = {} is not a AExp,Var or Num Value'.format(op2))
 
         self.op1 = op1
@@ -120,10 +115,10 @@ class Sub(AExp):
 
     #constructor
     def __init__(self, op1, op2):
-        if (not (isinstance(op1,AExp) or isinstance(op1,Num) or isinstance(op1,Var))):
+        if (not isinstance(op1,AExp)):
             raise AExpException('op1 = {} is not a AExp,Var or Num Value'.format(op1))
 
-        if (not (isinstance(op2,AExp) or isinstance(op2,Num) or isinstance(op2,Var))):
+        if (not isinstance(op2,AExp)):
             raise AExpException('op2 = {} is not a AExp,Var or Num Value'.format(op2))
 
         self.op1 = op1
@@ -183,10 +178,10 @@ class LowEq(BExp):
     op1, op2 = False, False
 
     def __init__(self,op1,op2):
-        if (not(isinstance(op1,BExp) or isinstance(op1,Var) or isinstance(op1,Num) or isinstance(op1,AExp))):
+        if (not(isinstance(op1,BExp) or isinstance(op1,AExp))):
             raise BExpException('op1 = {} is not a BExp Value'.format(op1))
 
-        if (not(isinstance(op2,BExp) or isinstance(op2,Var) or isinstance(op2,Num) or isinstance(op2,AExp))):
+        if (not(isinstance(op2,BExp) or isinstance(op2,AExp))):
             raise BExpException('op2 = {} is not a BExp Value'.format(op2))
 
         self.op1 = op1
@@ -204,10 +199,10 @@ class And(BExp):
     op1, op2 = False, False
 
     def __init__(self, op1, op2):
-        if (not(isinstance(op1,BExp) or isinstance(op1,Var) or isinstance(op1,Num) or isinstance(op1,AExp))):
+        if (not(isinstance(op1,BExp) or isinstance(op1,AExp))):
             raise BExpException('op1 = {} is not a BExp Value'.format(op1))
 
-        if (not(isinstance(op2,BExp) or isinstance(op2,Var) or isinstance(op2,Num) or isinstance(op2,AExp))):
+        if (not(isinstance(op2,BExp) or isinstance(op2,AExp))):
             raise BExpException('op2 = {} is not a BExp Value'.format(op2))
 
         self.op1 = op1
@@ -329,9 +324,9 @@ class Assignment(Stmt):
 
     def __init__(self, op1, op2):
         if(not(isinstance(op1,Var))):
-            raise VarException('op1 = {} is not a Var.'.format(op1))
-        if(not(isinstance(op2,AExp) or isinstance(op2,Var) or isinstance(op2,Num))):
-            raise WhileSyntaxException('op2 = {} is not a Var,Num or AExp'.format(op2))
+            raise WhileSyntaxException('op1 = {} is not a Var.'.format(op1))
+        if(not(isinstance(op2,AExp))):
+            raise AExpException('op2 = {} is not a Var,Num or AExp'.format(op2))
 
         self.op1 = op1
         self.op2 = op2
