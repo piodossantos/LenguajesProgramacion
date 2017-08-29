@@ -58,8 +58,22 @@ def test3():
     print("\n" + str(d) + "\n")
     d.eval(state)
     print(state)
+
+def test4():
+    print("\n Test 4 \n")
+    state = {}
+    a = If((Assignment(Var("prueba"),Num("-4"))),
+           (Skip()),
+           Equal(TruthValue(True),TruthValue("true")))
+    b = Assignment(Var("prueba"),
+                   Mul(Var("prueba"), Var("prueba")))
+    c = Concat(a, b)
+    print(c)
+    c.eval(state)
+    print(state)
     
 #MAIN
 test1()
 test2()
 test3()
+test4()
