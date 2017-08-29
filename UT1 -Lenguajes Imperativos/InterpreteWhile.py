@@ -36,7 +36,7 @@ class Stmt:
 
 #Sub classes
 
-class Num():
+class Num(AExp):
 
     value = 0
 
@@ -53,7 +53,7 @@ class Num():
 
         return self.value
 
-class Var():
+class Var(AExp):
     name = None
 
     #constructor
