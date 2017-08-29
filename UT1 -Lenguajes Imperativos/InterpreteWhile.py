@@ -1,7 +1,7 @@
 from WhileExceptions import *
 
 # Base classes
-class AExp:
+class Exp:
 
     #constructor
     def __init__(self):
@@ -10,14 +10,6 @@ class AExp:
     def __repr__(self):
         return self.__str__()
 
-class BExp:
-
-    #constructor
-    def __init__(self):
-        ...
-
-    def __repr__(self):
-        return self.__str__()
 
 class Stmt:
 
@@ -29,7 +21,7 @@ class Stmt:
         return self.__str__()
 
 #Sub classes
-class Num(AExp):
+class Num(Exp):
     value = 0
 
     def __init__(self, value):
@@ -37,7 +29,7 @@ class Num(AExp):
         if(not (temp.isnumeric())):
             raise NumException('Value = {} is not a numerical value.'
                                .format(value));
-        
+
         self.value = float(value)
 
     def __str__(self):
@@ -46,7 +38,7 @@ class Num(AExp):
     def eval(self,state):
         return self.value
 
-class Var(AExp):
+class Var(Exp):
     name = None
 
     #constructor
@@ -54,7 +46,7 @@ class Var(AExp):
         if(type(name) not in [chr,str]):
             raise VarException('{} is not a char/String value'
                                .format(name))
-        AExp.__init__(self)
+        Exp.__init__(self)
         self.name = name
 
     def __str__(self):
@@ -68,92 +60,104 @@ class Var(AExp):
         return temp
 
 
-class Sum(AExp):
+class Sum(Exp):
     op1, op2 = 0, 0
 
     #constructor
     def __init__(self, op1, op2):
-        if (not (isinstance(op1,AExp)
+        if (not (isinstance(op1,Exp)
                  or isinstance(op1,Num)
                  or isinstance(op1,Var))):
-            raise WhileSyntaxException('op1 = {} is not a AExp,Var or Num Value'
+            raise WhileSyntaxException('op1 = {} is not a Exp,Var or Num Value'
                                        .format(op1))
 
-        if (not (isinstance(op2, AExp)
+        if (not (isinstance(op2, Exp)
                  or isinstance(op2, Num)
                  or isinstance(op2, Var))):
-            raise WhileSyntaxException('op2 = {} is not a AExp,Var or Num Value'
+            raise WhileSyntaxException('op2 = {} is not a Exp,Var or Num Value'
                                        .format(op2))
 
         self.op1 = op1
         self.op2 = op2
 
     def eval(self,state):
-        return self.op1.eval(state) + self.op2.eval(state)
+        a=self.op1.eval(state)
+        b=self.op2.eval(state)
+        if( (isinstance(a,bool) or isinstance(b,bool) )):
+            raise  WhileSyntaxException('Invalid args')
+        return a+b
 
     def __str__(self):
         return '({} + {})'.format(str(self.op1),str(self.op2))
 
-class Mul(AExp):
+class Mul(Exp):
     op1, op2 = 0, 0
 
     #constructor
     def __init__(self, op1, op2):
-        if (not (isinstance(op1, AExp)
+        if (not (isinstance(op1, Exp)
                  or isinstance(op1, Num)
                  or isinstance(op1, Var))):
-            raise AExpException('op1 = {} is not a AExp,Var or Num Value'
+            raise ExpException('op1 = {} is not a Exp,Var or Num Value'
                                 .format(op1))
 
-        if (not (isinstance(op2, AExp)
+        if (not (isinstance(op2, Exp)
                  or isinstance(op2, Num)
                  or isinstance(op2,Var))):
-            raise AExpException('op2 = {} is not a AExp,Var or Num Value'
+            raise ExpException('op2 = {} is not a Exp,Var or Num Value'
                                 .format(op2))
 
         self.op1 = op1
         self.op2 = op2
 
     def eval(self,state):
-        return self.op1.eval(state) * self.op2.eval(state)
+        a=self.op1.eval(state)
+        b=self.op2.eval(state)
+        if( (isinstance(a,bool) or isinstance(b,bool) )):
+            raise  WhileSyntaxException('Invalid args')
+        return a*b
 
     def __str__(self):
         return '({} * {})'.format(str(self.op1),str(self.op2))
 
-class Sub(AExp):
+class Sub(Exp):
     op1, op2 = 0, 0
 
     #constructor
     def __init__(self, op1, op2):
-        if (not (isinstance(op1, AExp)
+        if (not (isinstance(op1, Exp)
                  or isinstance(op1, Num)
                  or isinstance(op1, Var))):
-            raise AExpException('op1 = {} is not a AExp,Var or Num Value'
+            raise ExpException('op1 = {} is not a Exp,Var or Num Value'
                                 .format(op1))
 
-        if (not (isinstance(op2, AExp)
+        if (not (isinstance(op2, Exp)
                  or isinstance(op2, Num)
                  or isinstance(op2, Var))):
-            raise AExpException('op2 = {} is not a AExp,Var or Num Value'
+            raise ExpException('op2 = {} is not a Exp,Var or Num Value'
                                 .format(op2))
 
         self.op1 = op1
         self.op2 = op2
 
-    def eval(self, state):
-        return self.op1.eval(state) - self.op2.eval(state)
+    def eval(self,state):
+        a=self.op1.eval(state)
+        b=self.op2.eval(state)
+        if((isinstance(a,bool) or isinstance(b,bool) )):
+            raise  WhileSyntaxException('Invalid args')
+        return a-b
 
     def __str__(self):
         return '({} - {})'.format(str(self.op1),str(self.op2))
 
-class TruthValue(BExp):
+class TruthValue(Exp):
     value = False
 
     #constructor
     def __init__(self,value):
 
         if ( not ( isinstance(value,bool)  or (str(value).upper() in ["TRUE","FALSE"]))):
-            raise BExpException('value = {} is not a boolean value'.format(str(value).upper()))
+            raise ExpException('value = {} is not a boolean value'.format(str(value).upper()))
         if (str(value).upper()=="FALSE"):
             value=""
         value = bool(value)
@@ -167,22 +171,22 @@ class TruthValue(BExp):
             return "tt"
         return "ff"
 
-class Equal(BExp):
+class Equal(Exp):
     op1, op2 = False, False
 
     def __init__(self, op1, op2):
-        if (not(isinstance(op1, BExp)
+        if (not(isinstance(op1, Exp)
                 or isinstance(op1, Var)
                 or isinstance(op1, Num)
-                or isinstance(op1, AExp))):
-            raise BExpException('op1 = {} is not a BExp Value'
+                or isinstance(op1, Exp))):
+            raise ExpException('op1 = {} is not a Exp Value'
                                 .format(op1))
 
-        if (not(isinstance(op2,BExp)
+        if (not(isinstance(op2,Exp)
                 or isinstance(op2,Var)
                 or isinstance(op2,Num)
-                or isinstance(op2,AExp))):
-            raise BExpException('op2 = {} is not a BExp Value'.format(op2))
+                or isinstance(op2,Exp))):
+            raise ExpException('op2 = {} is not a Exp Value'.format(op2))
 
         self.op1 = op1
         self.op2 = op2
@@ -192,24 +196,28 @@ class Equal(BExp):
 
 
     def eval(self,state):
+        a=self.op1.eval(state)
+        b=self.op2.eval(state)
+        if(( (isinstance(a,bool) or isinstance(b,bool)) ) and (not (isinstance(a,bool) and isinstance(b,bool)) )):
+            raise  WhileSyntaxException('Invalid args')
         return (self.op1.eval(state)) == (self.op2.eval(state))
 
-class LowEq(BExp):
+class LowEq(Exp):
     op1, op2 = False, False
 
     def __init__(self, op1, op2):
-        if (not(isinstance(op1, BExp)
+        if (not(isinstance(op1, Exp)
                 or isinstance(op1, Var)
                 or isinstance(op1, Num)
-                or isinstance(op1, AExp))):
-            raise BExpException('op1 = {} is not a BExp Value'
+                or isinstance(op1, Exp))):
+            raise ExpException('op1 = {} is not a Exp Value'
                                 .format(op1))
 
-        if (not(isinstance(op2, BExp)
+        if (not(isinstance(op2, Exp)
                 or isinstance(op2, Var)
                 or isinstance(op2, Num)
-                or isinstance(op2, AExp))):
-            raise BExpException('op2 = {} is not a BExp Value'
+                or isinstance(op2, Exp))):
+            raise ExpException('op2 = {} is not a Exp Value'
                                 .format(op2))
 
         self.op1 = op1
@@ -220,24 +228,28 @@ class LowEq(BExp):
 
 
     def eval(self,state):
+        a=self.op1.eval(state)
+        b=self.op2.eval(state)
+        if(( (isinstance(a,bool) or isinstance(b,bool)) ) and (not (isinstance(a,bool) and isinstance(b,bool)) )):
+            raise  WhileSyntaxException('Invalid args')
         return (self.op1.eval(state)) <= (self.op2.eval(state))
 
-class And(BExp):
+class And(Exp):
     op1, op2 = False, False
 
     def __init__(self, op1, op2):
-        if (not(isinstance(op1, BExp)
+        if (not(isinstance(op1, Exp)
                 or isinstance(op1, Var)
                 or isinstance(op1, Num)
-                or isinstance(op1, AExp))):
-            raise BExpException('op1 = {} is not a BExp Value'
+                or isinstance(op1, Exp))):
+            raise ExpException('op1 = {} is not a Exp Value'
                                 .format(op1))
 
-        if (not(isinstance(op2, BExp)
+        if (not(isinstance(op2, Exp)
                 or isinstance(op2, Var)
                 or isinstance(op2, Num)
-                or isinstance(op2, AExp))):
-            raise BExpException('op2 = {} is not a BExp Value'
+                or isinstance(op2, Exp))):
+            raise ExpException('op2 = {} is not a Exp Value'
                                 .format(op2))
 
         self.op1 = op1
@@ -248,14 +260,18 @@ class And(BExp):
 
 
     def eval(self,state):
+        a=self.op1.eval(state)
+        b=self.op2.eval(state)
+        if(( (isinstance(a,bool) or isinstance(b,bool)) ) and (not (isinstance(a,bool) and isinstance(b,bool)) )):
+            raise  WhileSyntaxException('Invalid args')
         return (self.op1.eval(state)) and (self.op2.eval(state))
 
-class Neg(BExp):
+class Neg(Exp):
     op1 = False
 
     def __init__(self, op1):
-        if (not(isinstance(op1, BExp))):
-            raise BExpException('op1 = {} is not a BExp Value'.format(op1))
+        if (not(isinstance(op1, Exp))):
+            raise ExpException('op1 = {} is not a Exp Value'.format(op1))
 
         self.op1 = op1
 
@@ -263,7 +279,10 @@ class Neg(BExp):
         return '¬({})'.format(str(self.op1))
 
 
-    def eval(self, state):
+    def eval(self,state):
+        a=self.op1.eval(state)
+        if(not (isinstance(a,bool) )):
+            raise  WhileSyntaxException('Invalid args')
         return not(self.op1.eval(state))
 
 class Skip(Stmt):
@@ -281,8 +300,8 @@ class While(Stmt):
     do = Skip()
 
     def __init__(self, cond, do):
-        if(not(isinstance(cond, BExp))):
-            raise BExpException('cond = {} is not a BExp Value'.format(cond))
+        if(not(isinstance(cond, Exp))):
+            raise ExpException('cond = {} is not a Exp Value'.format(cond))
 
         if(not(isinstance(do, Stmt))):
             raise StmtException('do = {} is not a Statement'.format(do))
@@ -296,12 +315,12 @@ class While(Stmt):
     def eval(self,state):
         while(self.cond.eval(state)):
             self.do.eval(state)
-            
+
 ####      Definicion alternativa, pero menos eficiente
 ##        s1= Concat(self.DO,self)
 ##        resultado = If(s1,Skip(),self.cond)
 ##        resultado.eval(state)
-            
+
         return state
 
 class Concat(Stmt):
@@ -335,8 +354,8 @@ class If(Stmt):
         if(not(isinstance(s2, Stmt))):
             raise StmtException('s2 = {} is not a Statement'
                                 .format(s2))
-        if(not(isinstance(cond, BExp))):
-            raise BExpException('cond = {} is not a BExp Value'
+        if(not(isinstance(cond, Exp))):
+            raise ExpException('cond = {} is not a Exp Value'
                                 .format(cond))
 
         self.s1 = s1
@@ -360,11 +379,11 @@ class Assignment(Stmt):
         if(not(isinstance(op1, Var))):
             raise VarException('op1 = {} is not a Var.'
                                .format(op1))
-        
-        if(not(isinstance(op2, AExp)
+
+        if(not(isinstance(op2, Exp)
                or isinstance(op2,Var)
                or isinstance(op2,Num))):
-            raise WhileSyntaxException('op2 = {} is not a Var,Num or AExp'
+            raise WhileSyntaxException('op2 = {} is not a Var,Num or Exp'
                                        .format(op2))
 
         self.op1 = op1

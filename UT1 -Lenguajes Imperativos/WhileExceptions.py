@@ -4,13 +4,11 @@ class WhileSyntaxException(Exception):
     def __init__(self, message):
         super(WhileSyntaxException, self).__init__(message)
 
-class AExpException(WhileSyntaxException):
+class ExpException(WhileSyntaxException):
     def __init__(self, message):
-        super(AExpException, self).__init__(message)
+        super(ExpException, self).__init__(message)
 
-class BExpException(WhileSyntaxException):
-    def __init__(self, message):
-        super(BExpException, self).__init__(message)
+
 
 class StmtException(WhileSyntaxException):
     def __init__(self, message):

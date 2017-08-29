@@ -15,7 +15,7 @@ def test1():
 
 def test2():
     print("\n Test 2 \n")
-    
+
     ## Input: 2 numeros
     ## Mientras a > b resta 1 a a y suma 1 a b.
     state = {}
@@ -27,7 +27,7 @@ def test2():
     f = Assignment(d,b)
     g = Concat(e,f)
     h = Concat(Skip(),g)
-    
+
     #Flujo do.
     #Sumo 1 a fruta2 y resto 1 a fruta1
     i = Sub(c,Num(1))
@@ -35,12 +35,12 @@ def test2():
     j = Sum(d,Num(1))
     jj = Assignment(d,j)
     k = Concat(ii,jj)
-    
+
     # Condition.
     l = LowEq(c,d)
     m = Neg(l)
     n = While(m,k)
-    
+
     # Juntamos las partes
     o = Concat(h,n)
     print(o)
@@ -62,7 +62,7 @@ def test3():
 def test4():
     print("\n Test 4 \n")
     state = {}
-    a = If((Assignment(Var("prueba"),Num("-4"))),
+    a = If((Assignment(Var("prueba"),Num(-4))),
            (Skip()),
            Equal(TruthValue(True),TruthValue("true")))
     b = Assignment(Var("prueba"),
@@ -71,7 +71,7 @@ def test4():
     print(c)
     c.eval(state)
     print(state)
-    
+
 #MAIN
 test1()
 test2()
