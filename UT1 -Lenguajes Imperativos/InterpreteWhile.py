@@ -1,15 +1,14 @@
 from WhileExceptions import *
 
-state={}
 
 class AExp:
 
     #constructor
     def __init__(self):
-        pass
+        ...
 
     def __repr__(self):
-        return str(self)
+        return self.__str__()
 
     ##def get_class(self):
 ##        return 'AExp'
@@ -18,10 +17,10 @@ class BExp:
 
     #constructor
     def __init__(self):
-        pass
+        ...
 
     def __repr__(self):
-        return str(self)
+        return self.__str__()
 
     ##def get_class(self):
         ##return 'BExp'
@@ -30,10 +29,10 @@ class Stmt:
 
     #constructor
     def __init__(self):
-        pass
+        ...
 
     def __repr__(self):
-        return str(self)
+        return self.__str__()
 
 #Sub classes
 
@@ -50,7 +49,7 @@ class Num():
     def __str__(self):
         return str(self.value)
 
-    def eval(self):
+    def eval(self,state):
 
         return self.value
 
@@ -67,7 +66,7 @@ class Var():
     def __str__(self):
         return str(self.name)
 
-    def eval(self):
+    def eval(self,state):
         temp= state.get(self.name)
         if (temp is None):
             raise VariableNotDeclaredException('{} is not initialized'.format(name))
@@ -88,8 +87,8 @@ class Sum(AExp):
         self.op1 = op1
         self.op2 = op2
 
-    def eval(self):
-        return self.op1.eval() + self.op2.eval()
+    def eval(self,state):
+        return self.op1.eval(state) + self.op2.eval(state)
 
     def __str__(self):
         return '({} + {})'.format(str(self.op1),str(self.op2))
@@ -109,8 +108,8 @@ class Mul(AExp):
         self.op1 = op1
         self.op2 = op2
 
-    def eval(self):
-        return self.op1.eval() * self.op2.eval()
+    def eval(self,state):
+        return self.op1.eval(state) * self.op2.eval(state)
 
     def __str__(self):
         return '({} * {})'.format(str(self.op1),str(self.op2))
@@ -130,8 +129,8 @@ class Sub(AExp):
         self.op1 = op1
         self.op2 = op2
 
-    def eval(self):
-        return self.op1.eval() - self.op2.eval()
+    def eval(self,state):
+        return self.op1.eval(state) - self.op2.eval(state)
 
     def __str__(self):
         return '({} - {})'.format(str(self.op1),str(self.op2))
@@ -150,7 +149,7 @@ class TruthValue(BExp):
         value = bool(value)
         self.value = value
 
-    def eval(self):
+    def eval(self,state):
         return self.value
 
     def __str__(self):
@@ -176,8 +175,8 @@ class Equal(BExp):
         return '({} = {})'.format(str(self.op1),str(self.op2))
 
 
-    def eval(self):
-        return (self.op1.eval()) == (self.op2.eval())
+    def eval(self,state):
+        return (self.op1.eval(state)) == (self.op2.eval(state))
 
 class LowEq(BExp):
 
@@ -197,8 +196,8 @@ class LowEq(BExp):
         return '({} <= {})'.format(str(self.op1),str(self.op2))
 
 
-    def eval(self):
-        return (self.op1.eval()) <= (self.op2.eval())
+    def eval(self,state):
+        return (self.op1.eval(state)) <= (self.op2.eval(state))
 
 class And(BExp):
 
@@ -218,8 +217,8 @@ class And(BExp):
         return '({} and {})'.format(str(self.op1),str(self.op2))
 
 
-    def eval(self):
-        return (self.op1.eval()) and (self.op2.eval())
+    def eval(self,state):
+        return (self.op1.eval(state)) and (self.op2.eval(state))
 
 class Neg(BExp):
 
@@ -235,8 +234,8 @@ class Neg(BExp):
         return '¬({})'.format(str(self.op1))
 
 
-    def eval(self):
-        return not(self.op1.eval())
+    def eval(self,state):
+        return not(self.op1.eval(state))
 
 class Skip(Stmt):
 
@@ -246,8 +245,8 @@ class Skip(Stmt):
     def __str__(self):
         return "skip"
 
-    def eval(self):
-        ...
+    def eval(self,state):
+        return state
 
 class While(Stmt):
 
@@ -268,13 +267,14 @@ class While(Stmt):
     def __str__(self):
         return 'while ({}) do ({})'.format(str(self.cond),str(self.do))
 
-    def eval(self):
-        while(self.cond.eval()):
-            self.do.eval()
+    def eval(self,state):
+        while(self.cond.eval(state)):
+            self.do.eval(state)
         #Definicion alternativa, pero menos eficiente
 ##        s1= Concat(self.DO,self)
 ##        resultado = If(s1,Skip(),self.cond)
-##        resultado.eval()
+##        resultado.eval(state)
+        return state
 
 class Concat(Stmt):
 
@@ -290,9 +290,10 @@ class Concat(Stmt):
         self.s1 = s1
         self.s2 = s2
 
-    def eval(self):
-        self.s1.eval()
-        self.s2.eval()
+    def eval(self,state):
+        self.s1.eval(state)
+        self.s2.eval(state)
+        return state
 
     def __str__(self):
         return '({} ; {})'.format(str(self.s1),str(self.s2))
@@ -316,11 +317,12 @@ class If(Stmt):
     def __str__(self):
         return 'if {} then ({}) else ({})'.format(str(self.cond),str(self.s1),str(self.s2))
 
-    def eval(self):
-        if(self.cond.eval()):
-            self.s1.eval()
+    def eval(self,state):
+        if(self.cond.eval(state)):
+            self.s1.eval(state)
         else:
-            self.s2.eval()
+            self.s2.eval(state)
+        return state
 
 class Assignment(Stmt):
     op1, op2 = "", 0
@@ -338,7 +340,8 @@ class Assignment(Stmt):
         return '{} := {}'.format(str(self.op1),str(self.op2))
 
 
-    def eval(self):
-        state[str(self.op1)] = self.op2.eval()
+    def eval(self,state):
+        state[str(self.op1)] = self.op2.eval(state)
+        return state
 
 ###programa Principal

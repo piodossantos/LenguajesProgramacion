@@ -2,10 +2,11 @@ from InterpreteWhile import *
 from WhileExceptions import *
 
 def test1():
+    state={}
     a=Num(5)
     b=Var("hola")
     c=Assignment(b,a)
-    c.eval()
+    c.eval(state)
     print(a)
     print(b)
     print(c)
@@ -14,7 +15,7 @@ def test1():
 def test2():
     ## Este programa recibe dos numeros,
     ## lo q hace es mientras a>b resta 1 a a y suma 1 a b.
-
+    state={}
     a=Num("8383.78")
     b=Num(-6.5)
     c=Var("VARIABLE_1")
@@ -37,13 +38,14 @@ def test2():
     ##junto ToDo
     o=Concat(h,n)
     print(o)
-    o.eval()
+    state=o.eval(state)
     print(state)
 
 def test3():
+    state={}
     a=And(TruthValue(True),TruthValue("false"))
     print(a)
-    print(a.eval())
+    print(a.eval(state))
 ##PROGRAMA Principal
 test1()
 test2()

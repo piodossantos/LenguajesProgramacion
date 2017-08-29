@@ -1,13 +1,4 @@
-Cosas que hay que preguntar
-
-  - Paso de String en Tipo Num y TruthValue.
-  - Paso Base sobre Recursividad
-  - Salto de linea
-  - Variables cuando la declaro ya la reservo en el diccionario?
-  - Las variables no almacenan
-  - Consultar While e IF.
-
 
 Cosas para hacer
-  - testear.
-  - documentar.
+  - Testear.
+  - Documentar.
