@@ -9,11 +9,11 @@ class AExpException(WhileSyntaxException):
         super(AExpException, self).__init__(message)
 
 class BExpException(WhileSyntaxException):
-    def __init__(self, message, ):
+    def __init__(self, message):
         super(BExpException, self).__init__(message)
 
 class StmtException(WhileSyntaxException):
-    def __init__(self, message, ):
+    def __init__(self, message):
         super(StmtException, self).__init__(message)
 
 class VariableNotDeclaredException(Exception):
