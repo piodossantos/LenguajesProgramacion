@@ -71,7 +71,7 @@ def test4():
     print(c)
     c.eval(state)
     print(state)
-def test5():
+def test_1_7():
     state={}
 
     a=Assignment(Var("z"),Num(1))

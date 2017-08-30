@@ -416,3 +416,16 @@ class Block(Stmt):
             state[clave]=stateBlock[clave]
         print(stateBlock)
         return state
+
+class FunctionDeclaration(Stmt):
+    ID=""
+    args=[]
+    body=Block([])
+
+    def __init__(self,ID,args,body):
+        self.ID=ID
+        self.args=args
+        self.body=body
+
+    def __str__(self):
+        return '{}({})[{}]'.format(self.ID,self.args,self.body)
