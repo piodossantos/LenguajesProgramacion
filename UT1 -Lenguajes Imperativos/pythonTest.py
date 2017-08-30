@@ -71,9 +71,22 @@ def test4():
     print(c)
     c.eval(state)
     print(state)
+def test5():
+    state={}
+
+    a=Assignment(Var("z"),Num(1))
+    b=Assignment(Var("y"),Sub(Var("y"),Var("z")))
+    c=Block([a,b])
+    cond=LowEq(Var("y"),Num(0))
+    w= While(cond,c)
+    as1=Assignment(Var("x"),Num(1))
+    as2=Assignment(Var("y"),Num(2))
+    j=Assignment(Var("x"),Mul(Var("z"),Num(2)))
+    final=Block([as1,as2,w,j])
+    print(final)
+    final.eval(state)
+    print(state)
+
 
 #MAIN
-test1()
-test2()
-test3()
-test4()
+test5()

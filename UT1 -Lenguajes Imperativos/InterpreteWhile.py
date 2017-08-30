@@ -396,3 +396,23 @@ class Assignment(Stmt):
     def eval(self, state):
         state[str(self.op1)] = self.op2.eval(state)
         return state
+
+
+class Block(Stmt):
+    lista=[]
+    def __init__(self,lista):
+        self.lista=lista
+    def __str__(self):
+        a="{\n"
+        for elemento in self.lista:
+            a+=(str(elemento)+"\n")
+        a+="}"
+        return a
+    def eval(self,state):
+        stateBlock = state.copy()
+        for elemento in self.lista:
+            elemento.eval(stateBlock)
+        for clave in state.keys():
+            state[clave]=stateBlock[clave]
+        print(stateBlock)
+        return state
