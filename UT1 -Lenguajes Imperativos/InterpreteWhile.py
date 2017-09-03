@@ -442,6 +442,8 @@ class FunctionDeclaration(Stmt):
         try:
             self.body.eval(stateBlock)
         except ReturnException as e:
+            for clave in state.keys():
+                state[clave]=stateBlock[clave]
             return e.retValue
         for clave in state.keys():
             state[clave]=stateBlock[clave]

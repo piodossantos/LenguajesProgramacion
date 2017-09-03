@@ -117,7 +117,9 @@ def test_1_8():
         # Juntamos las partes
         o = Concat(h,n)
 
-        p= Concat(o,ReturnValue(TruthValue(True)))
+
+        p= Concat(o,If(ReturnValue(TruthValue(True)),ReturnValue(TruthValue(False)),LowEq(d,c)))
+
         FunctionDeclaration("prueba",[],Block([p]),state )
 
         fc=FunctionCall("prueba",[])
