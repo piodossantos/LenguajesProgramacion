@@ -122,7 +122,7 @@ def test_1_8():
 
         FunctionDeclaration("prueba",[],Block([p]),state )
 
-        fc=FunctionCall("prueba",[])
+        fc=FunctionCall("prueba",["a","b","c"])
 
         final=Assignment(Var("resultado"),fc)
 

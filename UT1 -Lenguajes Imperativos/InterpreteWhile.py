@@ -437,8 +437,10 @@ class FunctionDeclaration(Stmt):
 
     def eval(self,state,values):
         stateBlock = state.copy()
+        i=0
         for argumento in values:
             stateBlock[str(argumento)]=values[i];
+            i+=1
         try:
             self.body.eval(stateBlock)
         except ReturnException as e:
@@ -458,9 +460,13 @@ class FunctionCall(Exp):
         self.args=args;
     def __str__(self):
         temporal=""
-        for arg in self.args:
-            temporal+=str(arg)+","
-        temporal=temporal.rstrip(temporal[-1:])
+        if(self.args==[]):
+            temporal="void"
+        else:
+            for arg in self.args:
+                temporal+=str(arg)+","
+            temporal=temporal.rstrip(temporal[-1:])
+
         return "{}({});".format(str(self.ID),str(temporal))
     def eval(self,state):
         func=state.get(self.ID)
