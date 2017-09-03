@@ -72,6 +72,7 @@ def test4():
     c.eval(state)
     print(state)
 def test_1_7():
+
     state={}
 
     a=Assignment(Var("z"),Num(1))
@@ -83,10 +84,51 @@ def test_1_7():
     as2=Assignment(Var("y"),Num(2))
     j=Assignment(Var("x"),Mul(Var("z"),Num(2)))
     final=Block([as1,as2,w,j])
-    print(final)
     final.eval(state)
     print(state)
+def test_1_8():
+        print("\n Test 1.8 \n")
 
+        ## Input: 2 numeros
+        ## Mientras a > b resta 1 a a y suma 1 a b.
+        state = {}
+        a = Num("8383.78")
+        b = Num(-6.5)
+        c = Var("VARIABLE_1")
+        d = Var("VARIABLE_2")
+        e = Assignment(c,a)
+        f = Assignment(d,b)
+        g = Concat(e,f)
+        h = Concat(Skip(),g)
+
+        #Flujo do.
+        #Sumo 1 a fruta2 y resto 1 a fruta1
+        i = Sub(c,Num(1))
+        ii = Assignment(c,i)
+        j = Sum(d,Num(1))
+        jj = Assignment(d,j)
+        k = Concat(ii,jj)
+
+        # Condition.
+        l = LowEq(c,d)
+        m = Neg(l)
+        n = While(m,k)
+
+        # Juntamos las partes
+        o = Concat(h,n)
+
+        p= Concat(o,ReturnValue(TruthValue(True)))
+        FunctionDeclaration("prueba",[],Block([p]),state )
+
+        fc=FunctionCall("prueba",[])
+
+        final=Assignment(Var("resultado"),fc)
+
+        print(final)
+
+        final.eval(state)
+
+        print(state)
 
 #MAIN
-test5()
+test_1_8()

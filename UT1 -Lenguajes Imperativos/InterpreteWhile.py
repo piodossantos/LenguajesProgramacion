@@ -382,8 +382,10 @@ class Assignment(Stmt):
 
         if(not(isinstance(op2, Exp)
                or isinstance(op2,Var)
-               or isinstance(op2,Num))):
-            raise WhileSyntaxException('op2 = {} is not a Var,Num or Exp'
+               or isinstance(op2,Num)
+               or isinstance(op2,ReturnValue)
+               )):
+            raise WhileSyntaxException('op2 = {} is not a Var,Num, Exp or ReturnValue'
                                        .format(op2))
 
         self.op1 = op1
@@ -399,7 +401,7 @@ class Assignment(Stmt):
 
 
 class Block(Stmt):
-    lista=[]
+    args=[]
     def __init__(self,lista):
         self.lista=lista
     def __str__(self):
@@ -422,10 +424,53 @@ class FunctionDeclaration(Stmt):
     args=[]
     body=Block([])
 
-    def __init__(self,ID,args,body):
+    def __init__(self,ID,args,body,state):
         self.ID=ID
         self.args=args
         self.body=body
-
+        state[self.ID]=self
     def __str__(self):
-        return '{}({})[{}]'.format(self.ID,self.args,self.body)
+        return '{}({})[]'.format(str(self.ID),str(self.args))
+
+    def eval(self,state):
+        return self.eval(state,[])
+
+    def eval(self,state,values):
+        stateBlock = state.copy()
+        for argumento in values:
+            stateBlock[str(argumento)]=values[i];
+        try:
+            self.body.eval(stateBlock)
+        except ReturnException as e:
+            return e.retValue
+        for clave in state.keys():
+            state[clave]=stateBlock[clave]
+        return state
+
+class FunctionCall(Exp):
+    ID=""
+    args=[]
+
+    def __init__(self,ID,args):
+        self.ID=ID;
+        self.args=args;
+    def __str__(self):
+        temporal=""
+        for arg in self.args:
+            temporal+=str(arg)+","
+        temporal=temporal.rstrip(temporal[-1:])
+        return "{}({});".format(str(self.ID),str(temporal))
+    def eval(self,state):
+        func=state.get(self.ID)
+        if(func==None):
+            ...
+            ##Raise error
+        return func.eval(state,self.args)
+class ReturnValue(Stmt):
+    value=0
+    def __init__(self,value):
+        self.value=value
+    def __str__(self):
+        return "return {}".format(str(self.value))
+    def eval(self,state):
+        raise ReturnException(str(self), state,self.value)
