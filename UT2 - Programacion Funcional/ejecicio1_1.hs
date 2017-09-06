@@ -10,6 +10,6 @@ evaluate (Suma a b)= (evaluate a) + (evaluate b)
 evaluate (Producto a b)= (evaluate a) * (evaluate b)
 
 toString::Expresion -> [Char]
-toString (Numero n)=show n
+toString (Numero n)= show n
 toString (Suma a b)= "(" ++ (toString a) ++ " + " ++ (toString b) ++ ")"
 toString (Producto a b)= "(" ++  (toString a) ++ " * " ++ (toString b)  ++ ")"
