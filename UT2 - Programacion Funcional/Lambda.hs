@@ -1,4 +1,3 @@
-import Data.List
 data LambdaTerm= Variable [Char]|Application LambdaTerm LambdaTerm | Abstraction [Char] LambdaTerm
   deriving(Show,Eq)
 
@@ -21,19 +20,20 @@ caso9 = toString (Variable "y")
 caso10 = toString (Variable "w")
 
 
-{- Ejercicio 1.3 -}
+{- Exercise 1.3 -}
 
 freeVars::LambdaTerm->[[Char]]
 freeVars (Variable v)= [v]
-freeVars (Application a b ) = (freeVars a)++(freeVars b)
+freeVars (Application a b ) = (freeVars a) ++ (freeVars b)
 freeVars (Abstraction a b) = filter (/=a) (freeVars b)
 
 boundVars::LambdaTerm->[[Char]]
 boundVars (Variable _)= []
 boundVars (Application a b) = (boundVars a)++(boundVars b)
 boundVars (Abstraction a b) = a:(boundVars b)
-{- Operacion -> Variable que voy a sustituir -> Que voy a sustituir-}
+
+{- Input -> variable to be replaced -> Expression to be replaced -> Output -}
 substitution::LambdaTerm -> [Char] -> LambdaTerm ->LambdaTerm
 substitution (Variable v) y z = if ( y == v ) then z else (Variable v)
 substitution (Application x y) v s = (Application (substitution x v s )  (substitution y v s ))
-substitution (Abstraction x y) v s = if x==v then (Abstraction x y ) else (substitution y v s)
+substitution (Abstraction x y) v s = if x/=v then (Abstraction x y ) else (substitution y v s)
