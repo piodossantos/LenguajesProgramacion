@@ -40,7 +40,7 @@ boundVars (Abstraction a b) = a:(boundVars b)
 substitution::LambdaTerm -> [Char] -> LambdaTerm ->LambdaTerm
 substitution (Variable v) y z = if ( y == v ) then z else (Variable v)
 substitution (Application x y) v s = (Application (substitution x v s )  (substitution y v s ))
-substitution (Abstraction x y) v s = if x/=v then (Abstraction x y ) else (substitution y v s)
+substitution (Abstraction x y) v s = if x==v then (Abstraction x y ) else (Abstraction x (substitution y v s))
 
 redexes:: LambdaTerm-> [LambdaTerm]
 redexes (Variable v) = []
@@ -84,7 +84,7 @@ isNF x = ((length (redexes x))==1)
 
 reduceNO::LambdaTerm->LambdaTerm
 reduceNO (Variable x) = (Variable x)
-reduceNO (Application (Abstraction x y) z) = substitution (Application (Abstraction x y) z) x z
+reduceNO (Application (Abstraction x y) z) = substitution y x z
 reduceNO (Application x y) = (Application (reduceNO x) (reduceNO y))
 reduceNO (Abstraction x y) = (Abstraction x (reduceNO y))
 
