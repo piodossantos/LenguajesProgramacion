@@ -4,8 +4,8 @@ data LambdaTerm= Variable [Char]|Application LambdaTerm LambdaTerm | Abstraction
 
 toString::LambdaTerm->[Char]
 toString (Variable v)= v
-toString (Application a b)= "("++(toString a)++" "++(toString b) ++ ")"
-toString (Abstraction a b)= "("++"\x3BB" ++ a ++"."++(toString b) ++ ")"
+toString (Application a b)= "("++(toString a)++" "++(toString b)++")"
+toString (Abstraction a b)= "\x3BB" ++ a ++"."++(toString b)
 
 
 
@@ -88,8 +88,31 @@ reduceNO (Application (Abstraction x y) z) = substitution y x z
 reduceNO (Application x y) = (Application (reduceNO x) (reduceNO y))
 reduceNO (Abstraction x y) = (Abstraction x (reduceNO y))
 
-
 reduceAO::LambdaTerm->LambdaTerm
 reduceAO (Variable x) = (Variable x)
 reduceAO (Application x y) = (Application (reduceAO x) (reduceAO y))
 reduceAO (Abstraction x y) = (Abstraction x (reduceNO y))
+
+
+{- Church Boolean -}
+l_True = Abstraction "x" (Abstraction "y" (Variable "x"))
+l_False = Abstraction "x" (Abstraction "y" (Variable "y"))
+l_IF = Application (Application (Abstraction "c" (Abstraction "t" (Abstraction "f" (Variable "c")))) (Variable "t")) (Variable "f")
+l_AND = Application (Application (Abstraction "a" (Abstraction "b" (Variable "a"))) (Variable "b") ) (l_False)
+l_OR =  Application (Application (Abstraction "a" (Abstraction "b" (Variable "a"))) (l_True) ) (Variable "b")
+l_NOT = Application (Application (Abstraction "a" (Variable "a")) (l_False)) (l_True)
+
+
+{- Church Number-}
+l_ZERO = Abstraction "s" (Abstraction "z" (Variable "z"))
+l_ONE = Application (Abstraction "s" (Abstraction "z" (Variable "s"))) (Variable "z")
+l_TWO = Application (Abstraction "s" (Abstraction "z" (Variable "s"))) (Application (Variable "s") (Variable "z"))
+l_ADD = Application (Application (Abstraction "m" (Abstraction "n" (Abstraction "s" (Abstraction "z" (Variable "m"))))) (Variable "s")) (Application (Application (Variable "n") (Variable "s")) (Variable "z"))
+l_MULT = Application (Application ( Abstraction "m" (Abstraction "n" (Abstraction "s" (Abstraction "z" (Variable "m"))))) (Application (Variable "n") (Variable "s"))) (Variable "z")
+
+{-Use for Debug.-}
+l_Church::IO()
+l_Church = putStr $ concat $ map (\(x,y) -> x ++" = " ++(toString y)++ "\n")$ zip lista_nombre lista_elem
+  where
+    lista_elem = [l_True,l_False,l_IF,l_AND,l_OR,l_NOT,l_ZERO,l_ONE,l_TWO,l_ADD,l_MULT]
+    lista_nombre = ["True","False","IF","AND","OR","NOT","ZERO","ONE","TWO","ADD","MULT"]
