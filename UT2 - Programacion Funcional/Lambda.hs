@@ -56,6 +56,7 @@ redexes (Abstraction x y) = redexes y
   variable por la que sustituyo
   output.
 -}
+{-
 alphaConversion:: LambdaTerm -> [Char] -> [Char] -> LambdaTerm
 alphaConversion (Variable v) x y = if v==x then (Variable y) else (Variable v)
 alphaConversion (Application x y) var1 var2
@@ -74,19 +75,38 @@ alphaConversion (Abstraction x y) var1 var2
     libres=freeVars (Abstraction x y)
     ligadas=boundVars (Abstraction x y)
     intersection= (intersect libres ligadas)
+-}
 
+{-
+  AlphaConversion
+  Detecta las variables que deberan ser reemplazadas y las reemplaza.
+-}
 
-
+alphaConversion::LambdaTerm->LambdaTerm
+alphaConversion x
+  |intersection == [] = x
+  |otherwise =map $ ( \(a,b) ->( let c = alphaConversionAUX x a b)) $ zip intersection variablesNuevas
+  where
+    libres= nub freeVars x
+    ligadas= nub boundVars x
+    intersection = (intersect libres ligadas)
+    variablesNuevas = map (\x-> "Variable_"++x )(take (length intersection) [1..] )
 {- Exercise 1.5 -}
 
 isNF::LambdaTerm->Bool
-isNF x = ((length (redexes x))==1)
-
+isNF x = ((length$(redexes x))==0)
+{-
 reduceNO::LambdaTerm->LambdaTerm
 reduceNO (Variable x) = (Variable x)
 reduceNO (Application (Abstraction x y) z) = substitution y x z
 reduceNO (Application x y) = (Application (reduceNO x) (reduceNO y))
 reduceNO (Abstraction x y) = (Abstraction x (reduceNO y))
+-}
+reduceNO::LambdaTerm->LambdaTerm
+reduceNO (Variable x) = (Variable x)
+reduceNO (Application (Abstraction x y) z) = substitution y x z
+reduceNO (Application x y) = if isNF $ (Application x y) then (Application x y) else reduceNO (Application (reduceNO x) (reduceNO y))
+reduceNO (Abstraction x y) = if isNF $ (Abstraction x y) then (Abstraction x y) else reduceNO (Abstraction x (reduceNO y))
 
 reduceAO::LambdaTerm->LambdaTerm
 reduceAO (Variable x) = (Variable x)
@@ -102,7 +122,6 @@ l_AND = Application (Application (Abstraction "a" (Abstraction "b" (Variable "a"
 l_OR =  Application (Application (Abstraction "a" (Abstraction "b" (Variable "a"))) (l_True) ) (Variable "b")
 l_NOT = Application (Application (Abstraction "a" (Variable "a")) (l_False)) (l_True)
 
-
 {- Church Number-}
 l_ZERO = Abstraction "s" (Abstraction "z" (Variable "z"))
 l_ONE = Application (Abstraction "s" (Abstraction "z" (Variable "s"))) (Variable "z")
@@ -112,7 +131,7 @@ l_MULT = Application (Application ( Abstraction "m" (Abstraction "n" (Abstractio
 
 {-Use for Debug.-}
 l_Church::IO()
-l_Church = putStr $ concat $ map (\(x,y) -> x ++" = " ++(toString y)++ "\n")$ zip lista_nombre lista_elem
+l_Church = putStr $ concat $ map (\(x,y) -> x ++" = " ++(toString y)++ "\n") $ zip lista_nombre lista_elem
   where
-    lista_elem = [l_True,l_False,l_IF,l_AND,l_OR,l_NOT,l_ZERO,l_ONE,l_TWO,l_ADD,l_MULT]
+    lista_elem   = [l_True,l_False,l_IF,l_AND,l_OR,l_NOT,l_ZERO,l_ONE,l_TWO,l_ADD,l_MULT]
     lista_nombre = ["True","False","IF","AND","OR","NOT","ZERO","ONE","TWO","ADD","MULT"]
