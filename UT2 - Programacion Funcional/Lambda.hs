@@ -82,15 +82,30 @@ alphaConversion (Abstraction x y) var1 var2
   Detecta las variables que deberan ser reemplazadas y las reemplaza.
 -}
 
+
+
 alphaConversion::LambdaTerm->LambdaTerm
 alphaConversion x
   |intersection == [] = x
-  |otherwise =map $ ( \(a,b) ->( let c = alphaConversionAUX x a b)) $ zip intersection variablesNuevas
+  |otherwise = alphaConversionAUX1 $ x  (zip $ intersection variablesNuevas)
   where
     libres= nub freeVars x
     ligadas= nub boundVars x
     intersection = (intersect libres ligadas)
     variablesNuevas = map (\x-> "Variable_"++x )(take (length intersection) [1..] )
+
+alphaConversionAUX1::LambdaTerm->[([Char],String)]->LambdaTerm
+alphaConversionAUX1 x [] = x
+alphaConversionAUX1 term [(x1,y1):(xs,ys)] = alphaConversionAUX1 (alphaConversionAUX2 term x1 y1) (xs,ys)
+
+
+alphaConversionAUX2::LambdaTerm-> [Char] -> String ->LambdaTerm
+alphaConversionAUX2 (Variable x) y z  = substitution x y z
+alphaConversionAUX2 _ _ _  =error"No implementado"
+
+
+
+
 {- Exercise 1.5 -}
 
 isNF::LambdaTerm->Bool
