@@ -16,9 +16,19 @@ toString (Abstraction a b)
   |otherwise= snd$head$filter (\x-> fst x==(head elemento)) (zip lista_elem lista_nombre)
   where
     lista_elem   = [l_True,l_False,l_IF,l_AND,l_OR,l_NOT,l_ZERO,l_ONE,l_TWO,l_THREE,l_FOUR,l_ADD,l_MULT]
-    lista_nombre = ["True","False","IF","AND","OR","NOT","ZERO","ONE","TWO","THREE","FOUR","ADD","MULT"]
+    lista_nombre = ["TRUE","FALSE","IF","AND","OR","NOT","ZERO","ONE","TWO","THREE","FOUR","ADD","MULT"]
     elemento= filter (== (Abstraction a b)) lista_elem
 
+toStringNOTSIMPL::LambdaTerm->String
+toStringNOTSIMPL (KBool x)=show(x)
+toStringNOTSIMPL (KInt x)=show(x)
+toStringNOTSIMPL (KIf)="?"
+toStringNOTSIMPL (KLt)="<"
+toStringNOTSIMPL (KMult)="*"
+toStringNOTSIMPL (KSub)="-"
+toStringNOTSIMPL (Variable v)= v
+toStringNOTSIMPL (Application a b)= "("++(toStringNOTSIMPL a)++" "++(toStringNOTSIMPL b)++")"
+toStringNOTSIMPL (Abstraction a b)="\x3BB" ++ a ++"."++(toStringNOTSIMPL b)
 {-for Print in console.-}
 toIO::LambdaTerm->IO()
 toIO x = putStrLn$toString$x
@@ -72,6 +82,7 @@ redexes (Variable v) = []
 redexes (Application (Abstraction x y) z ) = [(Application (Abstraction x y) z )] ++ redexes y
 redexes (Application x y) = (redexes x) ++ (redexes y)
 redexes (Abstraction x y) = redexes y
+redexes _ =[]
 
 {-Ejercicio 1.4 ANDA-}
 
@@ -91,42 +102,43 @@ normalReduction x = x
 
 applicativeReduction::LambdaTerm->LambdaTerm
 applicativeReduction (Application (Abstraction a b) c)
-  |b1/=b = Application (Abstraction a b1) (applicativeReduction c)
-  |c1/=c = Application (Abstraction a (applicativeReduction b)) c1
+  |b1 /= b = Application (Abstraction a b1) (applicativeReduction c)
+  |c1 /= c = Application (Abstraction a (applicativeReduction b)) c1
   |otherwise = substitution b a c
-  where
-    b1=applicativeReduction b
-    c1=applicativeReduction c
+    where
+      b1 = applicativeReduction b
+      c1 = applicativeReduction c
 applicativeReduction (Application m n)
-  |m2/=m = (Application m2 n)
+  |m2 /= m = (Application m2 n)
   |otherwise = Application m (applicativeReduction n)
   where
-    m2=applicativeReduction$m
+    m2 = applicativeReduction $ m
+applicativeReduction (Abstraction x y) = (Abstraction x (applicativeReduction y))
 applicativeReduction x = x
 
-prueba= Abstraction "x" (Abstraction "y" (Application (Application (Variable "a") (Variable "y")) (Variable "x")))
+prueba = Abstraction "x" (Abstraction "y" (Application (Application (Variable "a") (Variable "y")) (Variable "x")))
 
-prueba2= Application (Abstraction "x" (Abstraction "y" (Application (Variable"x")(Variable"y")))) (Variable"z")
+prueba2 = Application (Abstraction "x" (Abstraction "y" (Application (Variable"x")(Variable"y")))) (Variable"z")
 
 {-1.5 Ejercicio-}
 normalReductions::LambdaTerm->[LambdaTerm]
 normalReductions x
-  |x==y=[x]
-  |otherwise =[x] ++ (normalReductions y)
+  |x == y = [x]
+  |otherwise = [x] ++ (normalReductions y)
     where
-      y=normalReduction x
+      y = normalReduction x
 applicativeReductions::LambdaTerm->[LambdaTerm]
 applicativeReductions x
-  |x==y=[x]
-  |otherwise =[x] ++ (applicativeReductions y)
+  |x == y = [x]
+  |otherwise = [x] ++ (applicativeReductions y)
     where
-      y=applicativeReduction x
+      y = applicativeReduction x
 
 nAbs::[[Char]]->LambdaTerm->LambdaTerm
 nAbs vs b = foldr Abstraction b vs
 
 nApl::[LambdaTerm]->LambdaTerm
-nApl e=foldl1 Application e
+nApl e = foldl1 Application e
 
 nVar::[[Char]]->LambdaTerm
 nVar x = nApl  (map  Variable  x)
@@ -135,7 +147,7 @@ l_True = Abstraction "x" (Abstraction "y" (Variable "x"))
 l_False = Abstraction "x" (Abstraction "y" (Variable "y"))
 l_IF = nAbs ["c","t","f"] (nVar ["c","t","f"])
 l_AND = nAbs ["a","b"] (Application (nVar ["a","b"]) l_False )
-l_OR =  nAbs ["a","b"] (Application (Application (Variable "a") l_True) (Variable"b"))
+l_OR = nAbs ["a","b"] (Application (Application (Variable "a") l_True) (Variable"b"))
 l_NOT = nAbs ["a"] (Application (Application (Variable "a") l_False) (l_True))
 
 {- Church Number-}
@@ -150,21 +162,21 @@ l_MULT = nAbs ["m","n","s","z"] (Application (Application (Variable"m") (Applica
 
 {-Use for Debug.-}
 l_Church::IO()
-l_Church = putStr $ concat $ map (\(x,y) -> x ++" = " ++(toString y)++ "\n") $ zip lista_nombre lista_elem
+l_Church = putStr $ concat $ map (\(x,y) -> x ++"\t=  " ++(toStringNOTSIMPL y)++ "\n") $ zip lista_nombre lista_elem
   where
-    lista_elem   = [l_True,l_False,l_IF,l_AND,l_OR,l_NOT,l_ZERO,l_ONE,l_TWO,l_ADD,l_MULT]
-    lista_nombre = ["True","False","IF","AND","OR","NOT","ZERO","ONE","TWO","ADD","MULT"]
+    lista_elem = [l_True,l_False,l_IF,l_AND,l_OR,l_NOT,l_ZERO,l_ONE,l_TWO,l_THREE,l_FOUR,l_ADD,l_MULT]
+    lista_nombre = ["True","False","IF","AND","OR","NOT","ZERO","ONE","TWO","THREE","FOUR","ADD","MULT"]
 
 l_ChurchTEST::IO()
-l_ChurchTEST = putStr $ concat $ map (\(x,y)-> (toString x) ++ "=" ++ (toString y) ++ "\n" ) $zip listaNoReducida listaReducida
+l_ChurchTEST = putStr $ concat $ map (\(x,y)-> (toString x) ++ " = " ++ (toString y) ++ "\n" ) $ zip listaNoReducida listaReducida
   where
-    numberVAL=[l_ZERO,l_ONE,l_TWO]
-    boolVAL=[l_True,l_False]
-    listaIF= map (\x-> nApl[l_IF,x,Variable"a",Variable"b"]) boolVAL
-    listaAND= map (\(x,y)-> nApl[l_AND,x,y]) [(x,y)|x<-boolVAL,y<-boolVAL]
-    listaOR=map (\(x,y)-> nApl[l_OR,x,y]) [(x,y)|x<-boolVAL,y<-boolVAL]
-    listaNOT= [nApl[l_NOT,l_True],nApl[l_NOT,l_False]]
-    listaADD=map (\(x,y)-> nApl[l_ADD,x,y]) [(x,y)|x<-numberVAL,y<-numberVAL]
-    listaMULT=map (\(x,y)-> nApl[l_MULT,x,y]) [(x,y)|x<-numberVAL,y<-numberVAL]
+    numberVAL     =[l_ZERO,l_ONE,l_TWO]
+    boolVAL =[l_True,l_False]
+    listaIF = map (\x-> nApl[l_IF,x,Variable"a",Variable"b"]) boolVAL
+    listaAND = map (\(x,y)-> nApl[l_AND,x,y]) [(x,y)|x<-boolVAL,y<-boolVAL]
+    listaOR = map (\(x,y)-> nApl[l_OR,x,y]) [(x,y)|x<-boolVAL,y<-boolVAL]
+    listaNOT = [nApl[l_NOT,l_True],nApl[l_NOT,l_False]]
+    listaADD = map (\(x,y)-> nApl[l_ADD,x,y]) [(x,y)|x<-numberVAL,y<-numberVAL]
+    listaMULT = map (\(x,y)-> nApl[l_MULT,x,y]) [(x,y)|x<-numberVAL,y<-numberVAL]
     listaNoReducida = listaIF++listaAND++listaOR++listaNOT++listaADD++listaMULT
-    listaReducida= map (\x-> last $ normalReductions x) listaNoReducida
+    listaReducida = map (\x-> last $ applicativeReductions x) listaNoReducida
