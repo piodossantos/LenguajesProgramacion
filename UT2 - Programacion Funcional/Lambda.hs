@@ -129,11 +129,6 @@ applicativeReduction (Application m n)
 applicativeReduction (Abstraction x y) = (Abstraction x (applicativeReduction y))
 applicativeReduction x = x
 
--- prueba de reducciones
-prueba = Abstraction "x" (Abstraction "y" (Application (Application (Variable "a") (Variable "y")) (Variable "x")))
-
-prueba2 = Application (Abstraction "x" (Abstraction "y" (Application (Variable"x")(Variable"y")))) (Variable"z")
-
 {-1.5 Ejercicio-}
 -- lleva el lambda termino a su forma normal mediante una secuencia de reducciones normales
 -- devuelve todo los pasos de la reduccion en una lista.
