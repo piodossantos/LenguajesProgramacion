@@ -1,13 +1,27 @@
 import Data.List
-data LambdaTerm= Variable [Char]|Application LambdaTerm LambdaTerm | Abstraction [Char] LambdaTerm | KBool Bool | KInt Int | KIF | KLt | KMult | KSub
+data LambdaTerm= Variable [Char]|Application LambdaTerm LambdaTerm | Abstraction [Char] LambdaTerm | KBool Bool | KInt Int | KIf | KLt | KMult | KSub
   deriving(Show,Eq)
 
 toString::LambdaTerm->[Char]
+toString (KBool x)=show(x)
+toString (KInt x)=show(x)
+toString (KIf)="?"
+toString (KLt)="<"
+toString (KMult)="*"
+toString (KSub)="-"
 toString (Variable v)= v
 toString (Application a b)= "("++(toString a)++" "++(toString b)++")"
-toString (Abstraction a b)= "\x3BB" ++ a ++"."++(toString b)
+toString (Abstraction a b)
+  |null(elemento)="\x3BB" ++ a ++"."++(toString b)
+  |otherwise= snd$head$filter (\x-> fst x==(head elemento)) (zip lista_elem lista_nombre)
+  where
+    lista_elem   = [l_True,l_False,l_IF,l_AND,l_OR,l_NOT,l_ZERO,l_ONE,l_TWO,l_THREE,l_FOUR,l_ADD,l_MULT]
+    lista_nombre = ["True","False","IF","AND","OR","NOT","ZERO","ONE","TWO","THREE","FOUR","ADD","MULT"]
+    elemento= filter (== (Abstraction a b)) lista_elem
 
-
+{-for Print in console.-}
+toIO::LambdaTerm->IO()
+toIO x = putStrLn$toString$x
 
 caso1 = (Variable "x")
 caso2 = (Application (Variable "y") (Variable "z"))
@@ -22,7 +36,16 @@ caso10 = (Variable "w")
 caso11 = (Application (Abstraction "x" (Abstraction "y" (Application (Variable "x")( Variable "y"))  )  ) (Variable "y") )
 caso12 = (Application (Abstraction "x" (Abstraction "y" (Application (Variable "x")( Variable "y"))  )  ) (Variable "z") )
 
-y_T = error"No Implementado"
+y_T::LambdaTerm
+y_T = Abstraction "h" (Application j j)
+  where
+     j = Abstraction "x" (Application (Variable"h") (Application (Variable"x") (Variable"x") ))
+l_factorial::LambdaTerm
+l_factorial= nAbs["f","n"] (nApl[KIf,cond,(KInt 1),pasoRec])
+  where
+    cond=nApl[KLt,Variable"n",(KInt 2)]
+    aux=Application (Variable"f") (nApl[KSub,Variable"n",(KInt 1)])
+    pasoRec=nApl [KMult,Variable"n",aux]
 
 {- Exercise 1.3 -}
 
@@ -30,11 +53,13 @@ freeVars::LambdaTerm->[[Char]]
 freeVars (Variable v)= [v]
 freeVars (Application a b ) = (freeVars a) ++ (freeVars b)
 freeVars (Abstraction a b) = filter (/=a) (freeVars b)
+freeVars _ = []
 
 boundVars::LambdaTerm->[[Char]]
 boundVars (Variable _)= []
 boundVars (Application a b) = (boundVars a)++(boundVars b)
 boundVars (Abstraction a b) = a:(boundVars b)
+boundVars _ =[]
 
 {- Input -> variable to be replaced -> Expression to be replaced -> Output -}
 substitution::LambdaTerm -> [Char] -> LambdaTerm ->LambdaTerm
@@ -48,82 +73,6 @@ redexes (Application (Abstraction x y) z ) = [(Application (Abstraction x y) z )
 redexes (Application x y) = (redexes x) ++ (redexes y)
 redexes (Abstraction x y) = redexes y
 
-{- Exercise 1.4 -}
-
-{-
-  Input
-  variable que quiero sustituir
-  variable por la que sustituyo
-  output.
--}
-{-
-alphaConversion:: LambdaTerm -> [Char] -> [Char] -> LambdaTerm
-alphaConversion (Variable v) x y = if v==x then (Variable y) else (Variable v)
-alphaConversion (Application x y) var1 var2
-  |null intersection = (Application x y)
-  |elem var1 intersection = Application  (alphaConversion x var1 var2) (alphaConversion y var1 var2)
-  |otherwise = (Application x y)
-  where
-    libres=freeVars (Application x y)
-    ligadas=boundVars (Application x y)
-    intersection= (intersect libres ligadas)
-alphaConversion (Abstraction x y) var1 var2
-  |null intersection = (Abstraction x y)
-  |elem var1 intersection = Abstraction  (var2) (alphaConversion y var1 var2)
-  |otherwise = (Abstraction x y)
-  where
-    libres=freeVars (Abstraction x y)
-    ligadas=boundVars (Abstraction x y)
-    intersection= (intersect libres ligadas)
--}
-
-{-
-  AlphaConversion
-  Detecta las variables que deberan ser reemplazadas y las reemplaza.
--}
-
-
-{-
-alphaConversion::LambdaTerm->LambdaTerm
-alphaConversion x
-  |intersection == [] = x
-  |otherwise = alphaConversionAUX1 $ x  (zip $ intersection variablesNuevas)
-  where
-    libres= nub freeVars x
-    ligadas= nub boundVars x
-    intersection = (intersect libres ligadas)
-    variablesNuevas = map (\x-> "Variable_"++x )(take (length intersection) [1..] )
-
-alphaConversionAUX1::LambdaTerm->[([Char],String)]->LambdaTerm
-alphaConversionAUX1 x [] = x
-alphaConversionAUX1 term [(x1,y1):(xs,ys)] = alphaConversionAUX1 (alphaConversionAUX2 term x1 y1) (xs,ys)
-
-
-alphaConversionAUX2::LambdaTerm-> [Char] -> String ->LambdaTerm
-alphaConversionAUX2 (Variable x) y z  = substitution x y z
-alphaConversionAUX2 _ _ _  =error"No implementado"
-
--}
-
-
-{-
-reduceNO::LambdaTerm->LambdaTerm
-reduceNO (Variable x) = (Variable x)
-reduceNO (Application (Abstraction x y) z) = substitution y x z
-reduceNO (Application x y) = (Application (reduceNO x) (reduceNO y))
-reduceNO (Abstraction x y) = (Abstraction x (reduceNO y))
--}{-
-reduceNO::LambdaTerm->LambdaTerm
-reduceNO (Variable x) = (Variable x)
-reduceNO (Application (Abstraction x y) z) = substitution y x z
-reduceNO (Application x y) = if isNF $ (Application x y) then (Application x y) else reduceNO (Application (reduceNO x) (reduceNO y))
-reduceNO (Abstraction x y) = if isNF $ (Abstraction x y) then (Abstraction x y) else reduceNO (Abstraction x (reduceNO y))
-
-reduceAO::LambdaTerm->LambdaTerm
-reduceAO (Variable x) = (Variable x)
-reduceAO (Application x y) = (Application (reduceAO x) (reduceAO y))
-reduceAO (Abstraction x y) = (Abstraction x (reduceNO y))
--}
 {-Ejercicio 1.4 ANDA-}
 
 inNormalForm::LambdaTerm->Bool
@@ -192,12 +141,30 @@ l_NOT = nAbs ["a"] (Application (Application (Variable "a") l_False) (l_True))
 {- Church Number-}
 l_ZERO = Abstraction "s" (Abstraction "z" (Variable "z"))
 l_ONE = nAbs ["s","z"] (nVar ["s","z"])
-l_TWO =  nAbs ["s","z"] (nVar ["s","s","z"])
-l_ADD = nAbs ["m","n","s","z"] (Application (Application (Variable"m") (Variable"s"))(nVar["n","s","z"]))
-l_MULT = nAbs ["m","n","s","z"]  (Application (Application (nVar["m"]) (nVar["n","s"])) (nVar["z"]))
+l_TWO =  nAbs ["s","z"] (Application (Variable"s") (nVar["s","z"]))
+l_THREE = nAbs ["s","z"] (Application (Variable"s") (Application (Variable"s")(Application (Variable"s")(Variable"z")  ) ) )
+l_FOUR = nAbs ["s","z"] (Application (Variable"s") (Application(Variable"s")(Application(Variable"s")(Application (Variable"s")(Variable"z") ) ) ) )
+l_ADD = nAbs ["m","n","s","z"] (Application (Application (Variable"m")(Variable"s") )(nVar["n","s","z"]))
+l_MULT = nAbs ["m","n","s","z"] (Application (Application (Variable"m") (Application (Variable"n") (Variable"s")) )(Variable"z") )
+
+
 {-Use for Debug.-}
 l_Church::IO()
 l_Church = putStr $ concat $ map (\(x,y) -> x ++" = " ++(toString y)++ "\n") $ zip lista_nombre lista_elem
   where
     lista_elem   = [l_True,l_False,l_IF,l_AND,l_OR,l_NOT,l_ZERO,l_ONE,l_TWO,l_ADD,l_MULT]
     lista_nombre = ["True","False","IF","AND","OR","NOT","ZERO","ONE","TWO","ADD","MULT"]
+
+l_ChurchTEST::IO()
+l_ChurchTEST = putStr $ concat $ map (\(x,y)-> (toString x) ++ "=" ++ (toString y) ++ "\n" ) $zip listaNoReducida listaReducida
+  where
+    numberVAL=[l_ZERO,l_ONE,l_TWO]
+    boolVAL=[l_True,l_False]
+    listaIF= map (\x-> nApl[l_IF,x,Variable"a",Variable"b"]) boolVAL
+    listaAND= map (\(x,y)-> nApl[l_AND,x,y]) [(x,y)|x<-boolVAL,y<-boolVAL]
+    listaOR=map (\(x,y)-> nApl[l_OR,x,y]) [(x,y)|x<-boolVAL,y<-boolVAL]
+    listaNOT= [nApl[l_NOT,l_True],nApl[l_NOT,l_False]]
+    listaADD=map (\(x,y)-> nApl[l_ADD,x,y]) [(x,y)|x<-numberVAL,y<-numberVAL]
+    listaMULT=map (\(x,y)-> nApl[l_MULT,x,y]) [(x,y)|x<-numberVAL,y<-numberVAL]
+    listaNoReducida = listaIF++listaAND++listaOR++listaNOT++listaADD++listaMULT
+    listaReducida= map (\x-> last $ normalReductions x) listaNoReducida
