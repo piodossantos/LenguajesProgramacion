@@ -83,7 +83,7 @@ alphaConversion (Abstraction x y) var1 var2
 -}
 
 
-
+{-
 alphaConversion::LambdaTerm->LambdaTerm
 alphaConversion x
   |intersection == [] = x
@@ -103,20 +103,16 @@ alphaConversionAUX2::LambdaTerm-> [Char] -> String ->LambdaTerm
 alphaConversionAUX2 (Variable x) y z  = substitution x y z
 alphaConversionAUX2 _ _ _  =error"No implementado"
 
+-}
 
 
-
-{- Exercise 1.5 -}
-
-isNF::LambdaTerm->Bool
-isNF x = ((length$(redexes x))==0)
 {-
 reduceNO::LambdaTerm->LambdaTerm
 reduceNO (Variable x) = (Variable x)
 reduceNO (Application (Abstraction x y) z) = substitution y x z
 reduceNO (Application x y) = (Application (reduceNO x) (reduceNO y))
 reduceNO (Abstraction x y) = (Abstraction x (reduceNO y))
--}
+-}{-
 reduceNO::LambdaTerm->LambdaTerm
 reduceNO (Variable x) = (Variable x)
 reduceNO (Application (Abstraction x y) z) = substitution y x z
@@ -127,23 +123,78 @@ reduceAO::LambdaTerm->LambdaTerm
 reduceAO (Variable x) = (Variable x)
 reduceAO (Application x y) = (Application (reduceAO x) (reduceAO y))
 reduceAO (Abstraction x y) = (Abstraction x (reduceNO y))
+-}
+{-Ejercicio 1.4 ANDA-}
+
+inNormalForm::LambdaTerm->Bool
+inNormalForm x = ((length$(redexes x))==0)
+
+normalReduction::LambdaTerm->LambdaTerm
+normalReduction (Application (Abstraction a b) c) = substitution b a c
+normalReduction (Application m n)
+  |m2/=m = (Application m2 n)
+  |otherwise = Application m (normalReduction n)
+  where
+    m2=normalReduction $ m
+normalReduction (Abstraction x y)=(Abstraction x (normalReduction y))
+normalReduction x = x
 
 
+applicativeReduction::LambdaTerm->LambdaTerm
+applicativeReduction (Application (Abstraction a b) c)
+  |b1/=b = Application (Abstraction a b1) (applicativeReduction c)
+  |c1/=c = Application (Abstraction a (applicativeReduction b)) c1
+  |otherwise = substitution b a c
+  where
+    b1=applicativeReduction b
+    c1=applicativeReduction c
+applicativeReduction (Application m n)
+  |m2/=m = (Application m2 n)
+  |otherwise = Application m (applicativeReduction n)
+  where
+    m2=applicativeReduction$m
+applicativeReduction x = x
+
+prueba= Abstraction "x" (Abstraction "y" (Application (Application (Variable "a") (Variable "y")) (Variable "x")))
+
+prueba2= Application (Abstraction "x" (Abstraction "y" (Application (Variable"x")(Variable"y")))) (Variable"z")
+
+{-1.5 Ejercicio-}
+normalReductions::LambdaTerm->[LambdaTerm]
+normalReductions x
+  |x==y=[x]
+  |otherwise =[x] ++ (normalReductions y)
+    where
+      y=normalReduction x
+applicativeReductions::LambdaTerm->[LambdaTerm]
+applicativeReductions x
+  |x==y=[x]
+  |otherwise =[x] ++ (applicativeReductions y)
+    where
+      y=applicativeReduction x
+
+nAbs::[[Char]]->LambdaTerm->LambdaTerm
+nAbs vs b = foldr Abstraction b vs
+
+nApl::[LambdaTerm]->LambdaTerm
+nApl e=foldl1 Application e
+
+nVar::[[Char]]->LambdaTerm
+nVar x = nApl  (map  Variable  x)
 {- Church Boolean -}
 l_True = Abstraction "x" (Abstraction "y" (Variable "x"))
 l_False = Abstraction "x" (Abstraction "y" (Variable "y"))
-l_IF = Application (Application (Abstraction "c" (Abstraction "t" (Abstraction "f" (Variable "c")))) (Variable "t")) (Variable "f")
-l_AND = Application (Application (Abstraction "a" (Abstraction "b" (Variable "a"))) (Variable "b") ) (l_False)
-l_OR =  Application (Application (Abstraction "a" (Abstraction "b" (Variable "a"))) (l_True) ) (Variable "b")
-l_NOT = Application (Application (Abstraction "a" (Variable "a")) (l_False)) (l_True)
+l_IF = nAbs ["c","t","f"] (nVar ["c","t","f"])
+l_AND = nAbs ["a","b"] (Application (nVar ["a","b"]) l_False )
+l_OR =  nAbs ["a","b"] (Application (Application (Variable "a") l_True) (Variable"b"))
+l_NOT = nAbs ["a"] (Application (Application (Variable "a") l_False) (l_True))
 
 {- Church Number-}
 l_ZERO = Abstraction "s" (Abstraction "z" (Variable "z"))
-l_ONE = Application (Abstraction "s" (Abstraction "z" (Variable "s"))) (Variable "z")
-l_TWO = Application (Abstraction "s" (Abstraction "z" (Variable "s"))) (Application (Variable "s") (Variable "z"))
-l_ADD = Application (Application (Abstraction "m" (Abstraction "n" (Abstraction "s" (Abstraction "z" (Variable "m"))))) (Variable "s")) (Application (Application (Variable "n") (Variable "s")) (Variable "z"))
-l_MULT = Application (Application ( Abstraction "m" (Abstraction "n" (Abstraction "s" (Abstraction "z" (Variable "m"))))) (Application (Variable "n") (Variable "s"))) (Variable "z")
-
+l_ONE = nAbs ["s","z"] (nVar ["s","z"])
+l_TWO =  nAbs ["s","z"] (nVar ["s","s","z"])
+l_ADD = nAbs ["m","n","s","z"] (Application (Application (Variable"m") (Variable"s"))(nVar["n","s","z"]))
+l_MULT = nAbs ["m","n","s","z"]  (Application (Application (nVar["m"]) (nVar["n","s"])) (nVar["z"]))
 {-Use for Debug.-}
 l_Church::IO()
 l_Church = putStr $ concat $ map (\(x,y) -> x ++" = " ++(toString y)++ "\n") $ zip lista_nombre lista_elem
