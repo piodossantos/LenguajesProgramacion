@@ -216,4 +216,4 @@ l_ChurchTEST = putStr $concat $ map (\(x,y)-> (toString x) ++ " = " ++ (toString
     listaADD = map (\(x, y)-> nApl[l_ADD, x, y]) [(x, y)|x<-numberVAL, y<-numberVAL]
     listaMULT = map (\(x, y)-> nApl[l_MULT, x, y]) [(x, y)|x<-numberVAL, y<-numberVAL]
     listaNoReducida = listaIF ++ listaAND ++ listaOR ++ listaNOT ++ listaADD ++ listaMULT
-    listaReducida = map (\x-> last $ applicativeReductions x) listaNoReducida
+    listaReducida = map (\x-> last $ normalReductions x) listaNoReducida
