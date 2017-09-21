@@ -15,8 +15,8 @@ toString (Abstraction a b)
   |null(elemento) = "\x3BB" ++ a ++ "." ++ (toString b)
   |otherwise= snd $ head $ filter (\x -> fst x == (head elemento)) (zip lista_elem lista_nombre)
   where
-    lista_elem = [l_True, l_False, l_IF, l_AND, l_OR, l_NOT, l_ZERO, l_ONE, l_TWO, l_THREE, l_FOUR, l_ADD, l_MULT]
-    lista_nombre = ["TRUE", "FALSE", "IF", "AND", "OR", "NOT", "ZERO", "ONE", "TWO", "THREE", "FOUR", "ADD", "MULT"]
+    lista_elem = [l_True, l_False, l_IF, l_AND, l_OR, l_NOT, l_ZERO, l_ONE, l_TWO, l_THREE, l_FOUR, l_ADD, l_MULT,l_factorial,y_T]
+    lista_nombre = ["TRUE", "FALSE", "IF", "AND", "OR", "NOT", "ZERO", "ONE", "TWO", "THREE", "FOUR", "ADD", "MULT","FACTORIAL","PUNTO_FIJO"]
     elemento = filter ( == (Abstraction a b)) lista_elem
 
 -- Hace lo mismo que toString pero no simplifica por la variables
@@ -64,8 +64,8 @@ l_factorial = nAbs["f","n"] (nApl[KIf, cond, (KInt 1), pasoRec])
     pasoRec = nApl [KMult, Variable"n", aux]
 
 --Si anda este anda todo
-l_Final::LambdaTerm
-l_Final=nApl[y_T,l_factorial,(KInt 1)]
+factorial::Int->LambdaTerm
+factorial i =nApl[y_T,l_factorial,(KInt i)]
 
 {- Exercise 1.3 -}
 
@@ -165,7 +165,7 @@ applicativeReduction x = x
 normalReductions::LambdaTerm->[LambdaTerm]
 normalReductions x
   |x == y = [x]
-  |otherwise = [x,y] ++ (normalReductions y)
+  |otherwise = nub ([x,y] ++ (normalReductions y))
     where
       y = normalReduction x
 
@@ -174,7 +174,7 @@ normalReductions x
 applicativeReductions::LambdaTerm->[LambdaTerm]
 applicativeReductions x
   |x == y = [x]
-  |otherwise = [x,y] ++ (applicativeReductions y)
+  |otherwise = nub([x,y] ++ (applicativeReductions y))
     where
       y = applicativeReduction x
 
@@ -230,3 +230,12 @@ l_ChurchPROP = putStr $concat $ map (\(x,y)-> (toString x) ++ " = " ++ (toString
     listaMULT = map (\(x, y)-> nApl[l_MULT, x, y]) [(x, y)|x<-numberVAL, y<-numberVAL]
     listaNoReducida = listaIF ++ listaAND ++ listaOR ++ listaNOT ++ listaADD ++ listaMULT
     listaReducida = map (\x-> last $ applicativeReductions x) listaNoReducida
+
+pruebaConversion::[LambdaTerm]->IO()
+pruebaConversion x = putStr$concat$ map (++"\n" ) (map (toString) (x))
+
+pruebaDELTA::LambdaTerm
+pruebaDELTA = nApl[KLt,a,b]
+  where
+    a= nApl[KSub,(KInt 30),(KInt 2)]
+    b= nApl[KMult,(KInt 30),(KInt 2)]
