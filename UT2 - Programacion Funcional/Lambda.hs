@@ -63,6 +63,10 @@ l_factorial = nAbs["f","n"] (nApl[KIf, cond, (KInt 1), pasoRec])
     aux = Application (Variable"f") (nApl[KSub, Variable"n", (KInt 1)])
     pasoRec = nApl [KMult, Variable"n", aux]
 
+--Si anda este anda todo
+l_Final::LambdaTerm
+l_Final=Application (Application y_T l_factorial) (KInt 10)
+
 {- Exercise 1.3 -}
 
 -- freeVars devuelve una lista con las variables libres de un lambda termino
@@ -85,6 +89,7 @@ substitution::LambdaTerm -> [Char] -> LambdaTerm ->LambdaTerm
 substitution (Variable v) y z = if ( y == v ) then z else (Variable v)
 substitution (Application x y) v s = (Application (substitution x v s )  (substitution y v s ))
 substitution (Abstraction x y) v s = if x==v then (Abstraction x y ) else (Abstraction x (substitution y v s))
+substitution x y z = x
 
 -- calcula los redexes de un lambda termino y los devuelve en una lista.
 redexes:: LambdaTerm-> [LambdaTerm]
@@ -103,6 +108,10 @@ inNormalForm x = ((length$(redexes x)) == 0)
 -- simplifica el lambda termino en un solo paso o reduccion.
 normalReduction::LambdaTerm->LambdaTerm
 normalReduction (Application (Abstraction a b) c) = substitution b a c
+normalReduction (Application (Application KLt (KInt x)) (KInt y)) = KBool (x<y)
+normalReduction (Application (Application KMult (KInt x)) (KInt y)) = KInt (x*y)
+normalReduction (Application (Application KSub (KInt x)) (KInt y)) = KInt (x-y)
+normalReduction (Application( Application( Application(KIf) (KBool x)  )( a )  )( b ) ) = if x then a else b
 normalReduction (Application m n)
   |m2/=m = (Application m2 n)
   |otherwise = Application m (normalReduction n)
@@ -116,11 +125,21 @@ normalReduction x = x
 applicativeReduction::LambdaTerm->LambdaTerm
 applicativeReduction (Application (Abstraction a b) c)
   |b1 /= b = Application (Abstraction a b1) (applicativeReduction c)
-  |c1 /= c = Application (Abstraction a (applicativeReduction b)) c1
+  |c1 /= c = Application (Abstraction a ( b)) c1
   |otherwise = substitution b a c
     where
       b1 = applicativeReduction b
       c1 = applicativeReduction c
+applicativeReduction (Application (Application KLt (KInt x)) (KInt y)) = KBool (x<y)
+applicativeReduction (Application (Application KMult (KInt x)) (KInt y)) = KInt (x*y)
+applicativeReduction (Application (Application KSub (KInt x)) (KInt y)) = KInt (x-y)
+applicativeReduction (Application( Application( Application(KIf) (KBool x)  )( a )  )( b ) )
+  |a1/=a =Application( Application( Application(KIf) (KBool x)  )( applicativeReduction a1 )  )( applicativeReduction b )
+  |b1/=b =Application( Application( Application(KIf) (KBool x)  )( applicativeReduction a )  )( b1 )
+  |otherwise = if x then a else b
+    where
+      a1= applicativeReduction a
+      b1= applicativeReduction b
 applicativeReduction (Application m n)
   |m2 /= m = (Application m2 n)
   |otherwise = Application m (applicativeReduction n)
@@ -135,7 +154,7 @@ applicativeReduction x = x
 normalReductions::LambdaTerm->[LambdaTerm]
 normalReductions x
   |x == y = [x]
-  |otherwise = [x] ++ (normalReductions y)
+  |otherwise = [x,y] ++ (normalReductions y)
     where
       y = normalReduction x
 
@@ -186,7 +205,7 @@ l_Church = putStr $ concat $ map (\(x,y) -> x ++ "\t=  " ++ (toStringNOTSIMPL y)
     lista_nombre = ["True", "False", "IF", "AND", "OR", "NOT", "ZERO", "ONE", "TWO", "THREE", "FOUR", "ADD", "MULT"]
 
 l_ChurchTEST::IO()
-l_ChurchTEST = putStr $ concat $ map (\(x,y)-> (toString x) ++ " = " ++ (toString y) ++ "\n" ) $ zip listaNoReducida listaReducida
+l_ChurchTEST = putStr $concat $ map (\(x,y)-> (toString x) ++ " = " ++ (toString y) ++ "\n" ) $ zip listaNoReducida listaReducida
   where
     numberVAL = [l_ZERO,l_ONE,l_TWO]
     boolVAL = [l_True,l_False]
