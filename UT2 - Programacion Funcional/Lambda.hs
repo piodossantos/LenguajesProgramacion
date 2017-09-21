@@ -65,7 +65,7 @@ l_factorial = nAbs["f","n"] (nApl[KIf, cond, (KInt 1), pasoRec])
 
 --Si anda este anda todo
 l_Final::LambdaTerm
-l_Final=Application (Application y_T l_factorial) (KInt 10)
+l_Final=nApl[y_T,l_factorial,(KInt 1)]
 
 {- Exercise 1.3 -}
 
@@ -89,7 +89,7 @@ substitution::LambdaTerm -> [Char] -> LambdaTerm ->LambdaTerm
 substitution (Variable v) y z = if ( y == v ) then z else (Variable v)
 substitution (Application x y) v s = (Application (substitution x v s )  (substitution y v s ))
 substitution (Abstraction x y) v s = if x==v then (Abstraction x y ) else (Abstraction x (substitution y v s))
-substitution x y z = x
+substitution x _ _ = x
 
 -- calcula los redexes de un lambda termino y los devuelve en una lista.
 redexes:: LambdaTerm-> [LambdaTerm]
@@ -120,12 +120,18 @@ normalReduction (Application m n)
 normalReduction (Abstraction x y)=(Abstraction x (normalReduction y))
 normalReduction x = x
 
+
+
+
+
+
 -- simplifica el lambda termino en un solo paso o reduccion.
 -- el aplicativo va hacia las hojas del arbol de expresion.
 applicativeReduction::LambdaTerm->LambdaTerm
+applicativeReduction (Abstraction x y) = (Abstraction x (applicativeReduction y))
 applicativeReduction (Application (Abstraction a b) c)
-  |b1 /= b = Application (Abstraction a b1) (applicativeReduction c)
-  |c1 /= c = Application (Abstraction a ( b)) c1
+  |b1 /= b = Application (Abstraction a b1) (c)
+  |c1 /= c = Application (Abstraction a (b)) c1
   |otherwise = substitution b a c
     where
       b1 = applicativeReduction b
@@ -134,19 +140,24 @@ applicativeReduction (Application (Application KLt (KInt x)) (KInt y)) = KBool (
 applicativeReduction (Application (Application KMult (KInt x)) (KInt y)) = KInt (x*y)
 applicativeReduction (Application (Application KSub (KInt x)) (KInt y)) = KInt (x-y)
 applicativeReduction (Application( Application( Application(KIf) (KBool x)  )( a )  )( b ) )
-  |a1/=a =Application( Application( Application(KIf) (KBool x)  )( applicativeReduction a1 )  )( applicativeReduction b )
-  |b1/=b =Application( Application( Application(KIf) (KBool x)  )( applicativeReduction a )  )( b1 )
+  |a1/=a = (Application( Application( Application(KIf) (KBool x)  )( a1 )  )( b ) )
+  |b1/=b = (Application( Application( Application(KIf) (KBool x)  )( a )  )( b1 ) )
   |otherwise = if x then a else b
     where
-      a1= applicativeReduction a
-      b1= applicativeReduction b
+      a1 = applicativeReduction a
+      b1 = applicativeReduction b
+applicativeReduction (Application( Application( Application(KIf) ( x)  )( a )  )( b ) )
+  |x1/=x=(Application( Application( Application(KIf) ( x1)  )( a )  )( b ) )
+  |otherwise=(Application( Application( Application(KIf) ( x)  )( a )  )( b ) )
+    where
+      x1=applicativeReduction x
 applicativeReduction (Application m n)
   |m2 /= m = (Application m2 n)
   |otherwise = Application m (applicativeReduction n)
   where
     m2 = applicativeReduction $ m
-applicativeReduction (Abstraction x y) = (Abstraction x (applicativeReduction y))
 applicativeReduction x = x
+
 
 {-1.5 Ejercicio-}
 -- lleva el lambda termino a su forma normal mediante una secuencia de reducciones normales
@@ -163,7 +174,7 @@ normalReductions x
 applicativeReductions::LambdaTerm->[LambdaTerm]
 applicativeReductions x
   |x == y = [x]
-  |otherwise = [x] ++ (applicativeReductions y)
+  |otherwise = [x,y] ++ (applicativeReductions y)
     where
       y = applicativeReduction x
 
@@ -198,14 +209,16 @@ l_MULT = nAbs ["m","n","s","z"] (Application (Application (Variable"m") (Applica
 
 
 {-Use for Debug.-}
-l_Church::IO()
-l_Church = putStr $ concat $ map (\(x,y) -> x ++ "\t=  " ++ (toStringNOTSIMPL y) ++ "\n") $ zip lista_nombre lista_elem
+
+--Muestra en consola la expresion de cada operador booleano/aritmetico definido.
+l_ChurchEXP::IO()
+l_ChurchEXP = putStr $ concat $ map (\(x,y) -> x ++ "\t=  " ++ (toStringNOTSIMPL y) ++ "\n") $ zip lista_nombre lista_elem
   where
     lista_elem = [l_True, l_False, l_IF, l_AND, l_OR, l_NOT, l_ZERO, l_ONE, l_TWO, l_THREE, l_FOUR, l_ADD, l_MULT]
     lista_nombre = ["True", "False", "IF", "AND", "OR", "NOT", "ZERO", "ONE", "TWO", "THREE", "FOUR", "ADD", "MULT"]
-
-l_ChurchTEST::IO()
-l_ChurchTEST = putStr $concat $ map (\(x,y)-> (toString x) ++ " = " ++ (toString y) ++ "\n" ) $ zip listaNoReducida listaReducida
+--Evalua distintos casos para los booleanos y operadores aritmeticos.
+l_ChurchPROP::IO()
+l_ChurchPROP = putStr $concat $ map (\(x,y)-> (toString x) ++ " = " ++ (toString y) ++ "\n" ) $ zip listaNoReducida listaReducida
   where
     numberVAL = [l_ZERO,l_ONE,l_TWO]
     boolVAL = [l_True,l_False]
@@ -216,4 +229,4 @@ l_ChurchTEST = putStr $concat $ map (\(x,y)-> (toString x) ++ " = " ++ (toString
     listaADD = map (\(x, y)-> nApl[l_ADD, x, y]) [(x, y)|x<-numberVAL, y<-numberVAL]
     listaMULT = map (\(x, y)-> nApl[l_MULT, x, y]) [(x, y)|x<-numberVAL, y<-numberVAL]
     listaNoReducida = listaIF ++ listaAND ++ listaOR ++ listaNOT ++ listaADD ++ listaMULT
-    listaReducida = map (\x-> last $ normalReductions x) listaNoReducida
+    listaReducida = map (\x-> last $ applicativeReductions x) listaNoReducida
