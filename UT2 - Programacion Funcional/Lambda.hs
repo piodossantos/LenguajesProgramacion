@@ -2,7 +2,12 @@ import Data.List
 data LambdaTerm = Variable [Char]|Application LambdaTerm LambdaTerm | Abstraction [Char] LambdaTerm | KBool Bool | KInt Int | KIf | KLt | KMult | KSub
   deriving(Show,Eq)
 
-toString::LambdaTerm->[Char]
+{-
+  EJERCICIO 1.2. Con moficiciones para implementar 1.7
+-}
+
+-- devuelve un string con la representacion del lambda termino.
+toString::LambdaTerm->String
 toString (KBool x) = show(x)
 toString (KInt x) = show(x)
 toString (KIf) = "?"
@@ -10,30 +15,8 @@ toString (KLt) = "<"
 toString (KMult) = "*"
 toString (KSub) = "-"
 toString (Variable v) = v
-toString (Application a b) = "(" ++ (toString a) ++ " " ++ (toString b) ++ ")"
-toString (Abstraction a b)
-  |null(elemento) = "\x3BB" ++ a ++ "." ++ (toString b)
-  |otherwise= snd $ head $ filter (\x -> fst x == (head elemento)) (zip lista_elem lista_nombre)
-  where
-    lista_elem = [l_True, l_False, l_IF, l_AND, l_OR, l_NOT, l_ZERO, l_ONE, l_TWO, l_THREE, l_FOUR, l_ADD, l_MULT,l_factorial,y_T]
-    lista_nombre = ["TRUE", "FALSE", "IF", "AND", "OR", "NOT", "ZERO", "ONE", "TWO", "THREE", "FOUR", "ADD", "MULT","FACTORIAL","PUNTO_FIJO"]
-    elemento = filter ( == (Abstraction a b)) lista_elem
-
--- Hace lo mismo que toString pero no simplifica por la variables
-toStringNOTSIMPL::LambdaTerm->String
-toStringNOTSIMPL (KBool x) = show(x)
-toStringNOTSIMPL (KInt x) = show(x)
-toStringNOTSIMPL (KIf) = "?"
-toStringNOTSIMPL (KLt) = "<"
-toStringNOTSIMPL (KMult) = "*"
-toStringNOTSIMPL (KSub) = "-"
-toStringNOTSIMPL (Variable v) = v
-toStringNOTSIMPL (Application a b) = "("++(toStringNOTSIMPL a) ++ " " ++ (toStringNOTSIMPL b) ++ ")"
-toStringNOTSIMPL (Abstraction a b) = "\x3BB" ++ a ++ "." ++ (toStringNOTSIMPL b)
-
-{-for Print in console.-}
-toIO::LambdaTerm->IO()
-toIO x = putStrLn$toString$x
+toString (Application a b) = "("++(toString a) ++ " " ++ (toString b) ++ ")"
+toString (Abstraction a b) = "\x3BB" ++ a ++ "." ++ (toString b)
 
 -- casos de clase
 caso1 = (Variable "x")
@@ -49,25 +32,13 @@ caso10 = (Variable "w")
 caso11 = (Application (Abstraction "x" (Abstraction "y" (Application (Variable "x")(Variable "y")))) (Variable "y"))
 caso12 = (Application (Abstraction "x" (Abstraction "y" (Application (Variable "x")(Variable "y")))) (Variable "z"))
 
--- Punto fijo: para delta reducciones. Copia la funcion y mantiene el nombre
-y_T::LambdaTerm
-y_T = Abstraction "h" (Application j j)
-  where
-     j = Abstraction "x" (Application (Variable"h") (Application (Variable"x") (Variable"x") ))
 
--- Funcion factorial: si esta, anda todo.
-l_factorial::LambdaTerm
-l_factorial = nAbs["f","n"] (nApl[KIf, cond, (KInt 1), pasoRec])
-  where
-    cond = nApl[KLt, Variable"n", (KInt 2)]
-    aux = Application (Variable"f") (nApl[KSub, Variable"n", (KInt 1)])
-    pasoRec = nApl [KMult, Variable"n", aux]
 
---Si anda este anda todo
-factorial::Int->LambdaTerm
-factorial i =nApl[y_T,l_factorial,(KInt i)]
+{-
 
-{- Exercise 1.3 -}
+  EJERCICIO 1.3 (Con modificaciones para implementar 1.7)
+
+-}
 
 -- freeVars devuelve una lista con las variables libres de un lambda termino
 freeVars::LambdaTerm->[[Char]]
@@ -99,7 +70,11 @@ redexes (Application x y) = (redexes x) ++ (redexes y)
 redexes (Abstraction x y) = redexes y
 redexes _ =[]
 
-{-Ejercicio 1.4 ANDA-}
+{-
+
+  EJERCICIO 1.4 . (Con modificaciones para 1.7)
+
+-}
 
 -- devuelve true si esta en forma normal, es decir si no se puede reducir mas.
 inNormalForm::LambdaTerm->Bool
@@ -119,10 +94,6 @@ normalReduction (Application m n)
     m2=normalReduction $ m
 normalReduction (Abstraction x y)=(Abstraction x (normalReduction y))
 normalReduction x = x
-
-
-
-
 
 
 -- simplifica el lambda termino en un solo paso o reduccion.
@@ -158,8 +129,6 @@ applicativeReduction (Application m n)
     m2 = applicativeReduction $ m
 applicativeReduction x = x
 
-
-{-1.5 Ejercicio-}
 -- lleva el lambda termino a su forma normal mediante una secuencia de reducciones normales
 -- devuelve todo los pasos de la reduccion en una lista.
 normalReductions::LambdaTerm->[LambdaTerm]
@@ -178,17 +147,14 @@ applicativeReductions x
     where
       y = applicativeReduction x
 
--- realiza n abstracciones.
-nAbs::[[Char]]->LambdaTerm->LambdaTerm
-nAbs vs b = foldr Abstraction b vs
+{-Ejemplos que se piden implementar-}
+omega1 = (Abstraction "x" (Application (Variable "x") (Variable "x")))
+omega = (Application omega1 omega1)
+example1 = (Application (Abstraction "x" (Variable "y")) omega)
 
--- realiza n aplicaciones.
-nApl::[LambdaTerm]->LambdaTerm
-nApl e = foldl1 Application e
-
--- aplica n variables recibidas por parametro
-nVar::[[Char]]->LambdaTerm
-nVar x = nApl (map Variable x)
+{-
+  EJERCICIO 1.5. se recomienda llamar a l_ChurchEXP y l_ChurchPROP para probarlas.
+-}
 
 {- Church Boolean -}
 l_True = Abstraction "x" (Abstraction "y" (Variable "x"))
@@ -208,17 +174,85 @@ l_ADD = nAbs ["m","n","s","z"] (Application (Application (Variable"m") (Variable
 l_MULT = nAbs ["m","n","s","z"] (Application (Application (Variable"m") (Application (Variable"n") (Variable"s")))(Variable"z"))
 
 
-{-Use for Debug.-}
+
+{-
+  EJERCICIO 1.6 - 1.7 (Se recomienda llamar a la funcion factorial para corroborar su funcionamiento.)
+-}
+
+-- OPERADOR DE PUNTO FIJO: para delta reducciones. Copia la funcion y mantiene el nombre
+y_T::LambdaTerm
+y_T = Abstraction "h" (Application j j)
+  where
+     j = Abstraction "x" (Application (Variable"h") (Application (Variable"x") (Variable"x") ))
+
+-- Funcion factorial expresada en calculo lambda Impuro.
+l_factorial::LambdaTerm
+l_factorial = nAbs["f","n"] (nApl[KIf, cond, (KInt 1), pasoRec])
+  where
+    cond = nApl[KLt, Variable"n", (KInt 2)]
+    aux = Application (Variable"f") (nApl[KSub, Variable"n", (KInt 1)])
+    pasoRec = nApl [KMult, Variable"n", aux]
+
+
+{--
+  FUNCIONES EXTRA, que se usan para testear el codigo o simplificar alguna funcion.
+--}
+
+
+-- Recibe un entero y devuelve su factorial, expresado como un Lambda termino.
+-- Esta implementado como una operacion en calculo lambda impuro.
+factorial::Int->LambdaTerm
+factorial i =nApl[y_T,l_factorial,(KInt i)]
+
+
+
+{-Hace lo mismo que toString pero no simplifica algunas expresiones conocidas por un nombre de variable
+de forma de  hacerlo mas legible a la hora de testear.-}
+toStringSIMPL::LambdaTerm->[Char]
+toStringSIMPL (KBool x) = show(x)
+toStringSIMPL (KInt x) = show(x)
+toStringSIMPL (KIf) = "?"
+toStringSIMPL (KLt) = "<"
+toStringSIMPL (KMult) = "*"
+toStringSIMPL (KSub) = "-"
+toStringSIMPL (Variable v) = v
+toStringSIMPL (Application a b) = "(" ++ (toStringSIMPL a) ++ " " ++ (toStringSIMPL b) ++ ")"
+toStringSIMPL (Abstraction a b)
+  |null(elemento) = "\x3BB" ++ a ++ "." ++ (toStringSIMPL b)
+  |otherwise= snd $ head $ filter (\x -> fst x == (head elemento)) (zip lista_elem lista_nombre)
+  where
+    lista_elem = [l_True, l_False, l_IF, l_AND, l_OR, l_NOT, l_ZERO, l_ONE, l_TWO, l_THREE, l_FOUR, l_ADD, l_MULT,l_factorial,y_T,omega1]
+    lista_nombre = ["TRUE", "FALSE", "IF", "AND", "OR", "NOT", "ZERO", "ONE", "TWO", "THREE", "FOUR", "ADD", "MULT","FACTORIAL","PUNTO_FIJO","\x03A9"]
+    elemento = filter ( == (Abstraction a b)) lista_elem
+
+
+{-for Print in console.-}
+toIO::LambdaTerm->IO()
+toIO x = putStrLn$toString$x
+
+
+-- realiza n abstracciones
+nAbs::[[Char]]->LambdaTerm->LambdaTerm
+nAbs vs b = foldr Abstraction b vs
+
+-- realiza n aplicaciones, respetando asociativa por izquierda.
+nApl::[LambdaTerm]->LambdaTerm
+nApl e = foldl1 Application e
+
+-- aplica n variables recibidas por parametro
+nVar::[[Char]]->LambdaTerm
+nVar x = nApl (map Variable x)
 
 --Muestra en consola la expresion de cada operador booleano/aritmetico definido.
 l_ChurchEXP::IO()
-l_ChurchEXP = putStr $ concat $ map (\(x,y) -> x ++ "\t=  " ++ (toStringNOTSIMPL y) ++ "\n") $ zip lista_nombre lista_elem
+l_ChurchEXP = putStr $ concat $ map (\(x,y) -> x ++ "\t=  " ++ (toString y) ++ "\n") $ zip lista_nombre lista_elem
   where
     lista_elem = [l_True, l_False, l_IF, l_AND, l_OR, l_NOT, l_ZERO, l_ONE, l_TWO, l_THREE, l_FOUR, l_ADD, l_MULT]
     lista_nombre = ["True", "False", "IF", "AND", "OR", "NOT", "ZERO", "ONE", "TWO", "THREE", "FOUR", "ADD", "MULT"]
---Evalua distintos casos para los booleanos y operadores aritmeticos.
+
+--Evalua operadores logicos de los booleanos y operadores aritmeticos de los numeros (solamente 0 1 y 2).
 l_ChurchPROP::IO()
-l_ChurchPROP = putStr $concat $ map (\(x,y)-> (toString x) ++ " = " ++ (toString y) ++ "\n" ) $ zip listaNoReducida listaReducida
+l_ChurchPROP = putStr $ concat $ map (\(x,y)-> (toStringSIMPL x) ++ " = " ++ (toStringSIMPL y) ++ "\n" ) $ zip listaNoReducida listaReducida
   where
     numberVAL = [l_ZERO,l_ONE,l_TWO]
     boolVAL = [l_True,l_False]
@@ -231,11 +265,13 @@ l_ChurchPROP = putStr $concat $ map (\(x,y)-> (toString x) ++ " = " ++ (toString
     listaNoReducida = listaIF ++ listaAND ++ listaOR ++ listaNOT ++ listaADD ++ listaMULT
     listaReducida = map (\x-> last $ applicativeReductions x) listaNoReducida
 
+-- Si se le pasa por parametro una reduccion imprimira en consola la lista de pasos que se ejectan/ejecutraron para llegar al resultado.
 pruebaConversion::[LambdaTerm]->IO()
-pruebaConversion x = putStr$concat$ map (++"\n" ) (map (toString) (x))
+pruebaConversion x = putStr $ concat $ map ( ++ "\n" ) ( map ( toStringSIMPL ) ( x ))
 
+-- Se usa para ver si soporta una delta reduction usando reduccion normal  o aplicativa.
 pruebaDELTA::LambdaTerm
-pruebaDELTA = nApl[KLt,a,b]
+pruebaDELTA = nApl [KLt,a,b]
   where
-    a= nApl[KSub,(KInt 30),(KInt 2)]
-    b= nApl[KMult,(KInt 30),(KInt 2)]
+    a = nApl [KSub,(KInt 30),(KInt 2)]
+    b = nApl [KMult,(KInt 30),(KInt 2)]
