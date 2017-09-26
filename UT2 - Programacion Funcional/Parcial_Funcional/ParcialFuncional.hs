@@ -198,3 +198,14 @@ l_ChurchTEST = putStr $ concat $ map (\(x,y)-> (toString x) ++ " = " ++ (toStrin
     listaMULT = map (\(x, y)-> nApl[l_MULT, x, y]) [(x, y)|x<-numberVAL, y<-numberVAL]
     listaNoReducida = listaIF ++ listaAND ++ listaOR ++ listaNOT ++ listaADD ++ listaMULT
     listaReducida = map (\x-> last $ applicativeReductions x) listaNoReducida
+
+
+nAplINV::[LambdaTerm]->LambdaTerm
+nAplINV e = foldr1 Application e
+
+    -- Generar numeros
+generarNumero::Int->LambdaTerm
+generarNumero n = (Abstraction "s"(Abstraction ("z") (x) ))
+  where
+    x= nAplINV (y)
+    y= (replicate n (Variable"s"))++[Variable"z"]

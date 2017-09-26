@@ -239,6 +239,10 @@ nAbs vs b = foldr Abstraction b vs
 nApl::[LambdaTerm]->LambdaTerm
 nApl e = foldl1 Application e
 
+nAplINV::[LambdaTerm]->LambdaTerm
+nAplINV e = foldr1 Application e
+
+
 -- aplica n variables recibidas por parametro
 nVar::[[Char]]->LambdaTerm
 nVar x = nApl (map Variable x)
@@ -275,3 +279,10 @@ pruebaDELTA = nApl [KLt,a,b]
   where
     a = nApl [KSub,(KInt 30),(KInt 2)]
     b = nApl [KMult,(KInt 30),(KInt 2)]
+
+-- Generar numeros
+generarNumero::Int->LambdaTerm
+generarNumero n = (Abstraction "s"(Abstraction ("z") (x) ))
+  where
+    x= nAplINV (y)
+    y= (replicate n (Variable"s"))++[Variable"z"]
