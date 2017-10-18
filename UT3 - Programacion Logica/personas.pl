@@ -32,8 +32,13 @@ parents(raul, maria, quique).
 parents(sofia, maria, quique).
 parents(tomas, maria, quique).
 
-
-
+married(ana, diego).
+married(esther, franco).
+married(betty, gaston).
+married(juana, ignacio).
+married( kelly, hector).
+married(natalia, oscar).
+married( maria, quique).
 /*Ejercicios*/
 %%
 mother(X,Y):- person(X,female), parents(Y,X,_).

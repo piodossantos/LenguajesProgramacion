@@ -1,0 +1,21 @@
+empty().
+playerX().
+playerY().
+isValid(tictactoe(A,B,C,D,E,F,G,H,I)):-
+  (A=playerX;A=playerY;A=empty),
+  (B=playerX;B=playerY;B=empty),
+  (C=playerX;C=playerY;C=empty),
+  (D=playerX;D=playerY;D=empty),
+  (E=playerX;E=playerY;E=empty),
+  (F=playerX;F=playerY;F=empty),
+  (G=playerX;G=playerY;G=empty),
+  (H=playerX;H=playerY;H=empty),
+  (I=playerX;I=playerY;I=empty).
+winner(T,X):-isValid(T),T=tictactoe(X,X,X,_,_,_,_,_,_),(X=playerX;X=playerY).
+winner(T,X):-isValid(T),T=tictactoe(_,_,_,X,X,X,_,_,_),(X=playerX;X=playerY).
+winner(T,X):-isValid(T),T=tictactoe(_,_,_,_,_,_,X,X,X),(X=playerX;X=playerY).
+winner(T,X):-isValid(T),T=tictactoe(X,_,_,X,_,_,X,_,_),(X=playerX;X=playerY).
+winner(T,X):-isValid(T),T=tictactoe(_,X,_,_,X,_,_,X,_),(X=playerX;X=playerY).
+winner(T,X):-isValid(T),T=tictactoe(_,_,X,_,_,X,_,_,X),(X=playerX;X=playerY).
+winner(T,X):-isValid(T),T=tictactoe(X,_,_,_,X,_,_,_,X),(X=playerX;X=playerY).
+winner(T,X):-isValid(T),T=tictactoe(_,_,X,_,X,_,X,_,_),(X=playerX;X=playerY).
