@@ -42,5 +42,10 @@ public class OopsMessage extends OopsCode {
     public void setReceptor(OopsObject receptor) {
         this.receptor = receptor;
     }
+
+    @Override
+    public OopsObject evaluate() {
+        return this.getReceptor().respond(this.getSelector(), this.getArgumentos());
+    }
     
 }
