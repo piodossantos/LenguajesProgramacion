@@ -1,3 +1,10 @@
+package Ejecucion;
+
+
+import Ejecucion.OopsMethod;
+import Ejecucion.OopsObject;
+import java.util.HashMap;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -9,7 +16,22 @@
  * @author pio
  */
 public class OopsInteger extends OopsObject {
-    private int valor;
+    private final int valor;
+    private static final HashMap<String,OopsMethod> metodos = new HashMap<>();
+    static{
+        metodos.put("+", new OopsSuma("+"));
+        metodos.put("-", new OopsResta("-"));
+        metodos.put("*", new OopsProducto("*"));
+        metodos.put("/", new OopsDivision("/"));
+        metodos.put(">", new OopsMayor(">"));
+        metodos.put("<", new OopsMenor("<"));
+        metodos.put("<=", new OopsMenorIgual("<="));
+        metodos.put(">=", new OopsMayorIgual(">="));
+        metodos.put("==", new OopsIgual("=="));
+        metodos.put("!=", new OopsDistinto("!="));
+
+
+    }
 
     public OopsInteger(int valor) {
         this.valor = valor;
@@ -19,9 +41,7 @@ public class OopsInteger extends OopsObject {
         return valor;
     }
 
-    public void setValor(int valor) {
-        this.valor = valor;
-    }
+
     
     @Override
     public OopsObject respond(String selector, OopsObject[] argumentos) {
@@ -39,26 +59,31 @@ public class OopsInteger extends OopsObject {
                 OopsInteger d = (OopsInteger) argumentos[0];
                 return new OopsInteger(d.getValor()/this.getValor());
             case "<":
-                OopsBoolean e = (OopsBoolean) argumentos[0];
-                return new OopsInteger(e.getValor()<this.getValor());
+                OopsInteger e = (OopsInteger) argumentos[0];
+                return new OopsBoolean(e.getValor()>this.getValor());
             case ">":
-                OopsBoolean f = (OopsBoolean) argumentos[0];
-                return new OopsInteger(f.getValor()>this.getValor());
+                OopsInteger f = (OopsInteger) argumentos[0];
+                return new OopsBoolean(f.getValor()<this.getValor());
             case ">=":
-                OopsBoolean g = (OopsBoolean) argumentos[0];
-                return new OopsInteger(g.getValor()>=this.getValor());
+                OopsInteger g = (OopsInteger) argumentos[0];
+                return new OopsBoolean(g.getValor()<=this.getValor());
             case "<=":
-                OopsBoolean h = (OopsBoolean) argumentos[0];
-                return new OopsInteger(h.getValor()<=this.getValor());
+                OopsInteger h = (OopsInteger) argumentos[0];
+                return new OopsBoolean(h.getValor()>=this.getValor());
             case "==":
-                OopsBoolean i = (OopsBoolean) argumentos[0];
-                return new OopsInteger(i.getValor()==this.getValor());
+                OopsInteger i = (OopsInteger) argumentos[0];
+                return new OopsBoolean(i.getValor()==this.getValor());
             case "!=":
-                OopsBoolean j = (OopsBoolean) argumentos[0];
-
-                return new OopsInteger(j.getValor()!=this.getValor());
+                OopsInteger j = (OopsInteger) argumentos[0];
+                return new OopsBoolean(j.getValor()!=this.getValor());
         }
         return null;     
     }
+
+    @Override
+    public String toString() {
+        return "OopsInteger{" + "valor=" + valor + '}';
+    }
+    
     
 }

@@ -1,3 +1,10 @@
+package Ejecucion;
+
+
+import Ejecucion.OopsMethod;
+import Ejecucion.OopsObject;
+import java.util.HashMap;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -11,22 +18,21 @@
 
 public class OopsBoolean extends OopsObject {
   
-    private boolean valor;
+    private final boolean valor;
     
+    private static final HashMap<String,OopsMethod> metodos = new HashMap<>();
+    static{
+        metodos.put("&", new OopsAnd("&"));
+        metodos.put("!", new OopsNot("!"));
+        metodos.put("|", new OopsOr("|"));
+    }
     
     @Override
     public OopsObject respond(String selector, OopsObject[] argumentos) {
         OopsObject result = null;
-        switch (selector){
-            case "negacion":
-                result = negacion();
-                break;
-            case "and":
-                result = and (((OopsBoolean) argumentos[0]).getValor());
-                break;
-            case "or":
-                result = or (((OopsBoolean) argumentos[0]).getValor());
-                break;
+        OopsMethod temporal=OopsBoolean.metodos.get(selector);
+        if (temporal!=null){
+            result = temporal.evaluate(this, argumentos);
         }
         return result;
     }
@@ -38,19 +44,11 @@ public class OopsBoolean extends OopsObject {
     public boolean getValor (){
         return valor;
     }
-    
-    
-    public OopsBoolean negacion(){
-        return new OopsBoolean(!(this.getValor()));
-    }
-    
-    public OopsBoolean and (boolean b){
-        return new OopsBoolean((this.getValor()) && b);
-    }
-    
-    
-    public OopsBoolean or (boolean b){
-        return new OopsBoolean((this.getValor()) || b);
+
+
+    @Override
+    public String toString() {
+        return "OopsBoolean{" + "valor=" + valor + '}';
     }
     
     

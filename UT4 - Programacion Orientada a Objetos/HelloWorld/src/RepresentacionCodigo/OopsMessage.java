@@ -1,3 +1,9 @@
+package RepresentacionCodigo;
+
+
+import Ejecucion.OopsObject;
+import java.util.TreeSet;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -10,10 +16,10 @@
  */
 public class OopsMessage extends OopsCode {
     private String selector;
-    private OopsObject[] argumentos;
-    private OopsObject receptor;
+    private OopsCode[] argumentos;
+    private OopsCode receptor;
 
-    public OopsMessage(String selector, OopsObject[] argumentos, OopsObject receptor) {
+    public OopsMessage(String selector, OopsCode[] argumentos, OopsCode receptor) {
         this.selector = selector;
         this.argumentos = argumentos;
         this.receptor = receptor;
@@ -27,25 +33,38 @@ public class OopsMessage extends OopsCode {
         this.selector = selector;
     }
 
-    public OopsObject[] getArgumentos() {
+    public OopsCode[] getArgumentos() {
         return argumentos;
     }
 
-    public void setArgumentos(OopsObject[] argumentos) {
+    public void setArgumentos(OopsCode[] argumentos) {
         this.argumentos = argumentos;
     }
 
-    public OopsObject getReceptor() {
+    public OopsCode getReceptor() {
         return receptor;
     }
 
-    public void setReceptor(OopsObject receptor) {
+    public void setReceptor(OopsCode receptor) {
         this.receptor = receptor;
     }
 
     @Override
-    public OopsObject evaluate() {
-        return this.getReceptor().respond(this.getSelector(), this.getArgumentos());
+    public OopsObject evaluate(OopsState estado) {
+        OopsObject receptor = this.getReceptor().evaluate(estado);
+       // TreeSet<OopsObject> arbol = new TreeSet();
+        OopsObject[] args= new OopsObject[this.getArgumentos().length];
+        for(int i=0;i<args.length;i++){
+            args[i]=this.getArgumentos()[i].evaluate(estado);
+        }
+        return receptor.respond(selector, args);
+        //return this.getReceptor().respond(this.getSelector(), this.getArgumentos());
     }
+
+    @Override
+    public String toString() {
+        return "OopsMessage{" + "selector=" + selector + ", argumentos=" + argumentos + ", receptor=" + receptor + '}';
+    }
+    
     
 }
