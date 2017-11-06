@@ -30,4 +30,10 @@ public class OopsVariable extends OopsCode {
     public OopsObject evaluate(OopsState estado) {
         return estado.getEstado().get(var);
     }
+
+    @Override
+    public String toString() {
+        return '"'+var+'"';
+    }
+    
 }

@@ -44,5 +44,12 @@ public class OopsAssignament extends OopsCode{
         estado.getEstado().put(identificador, cualquiera);
         return cualquiera;
     }
+
+    @Override
+    public String toString() {
+        return identificador + " <- " + valor ;
+    }
+    
+    
     
 }

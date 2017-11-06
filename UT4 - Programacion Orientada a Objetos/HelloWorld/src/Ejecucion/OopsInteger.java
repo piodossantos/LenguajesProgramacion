@@ -42,47 +42,19 @@ public class OopsInteger extends OopsObject {
     }
 
 
-    
-    @Override
-    public OopsObject respond(String selector, OopsObject[] argumentos) {
-
-        switch(selector){
-            case "+":
-                OopsInteger a = (OopsInteger) argumentos[0];
-                return new OopsInteger(a.getValor()+this.getValor());
-            case "-":
-                return new OopsInteger(((OopsInteger) argumentos[0]).getValor()-this.getValor());
-            case "*":
-                OopsInteger c = (OopsInteger) argumentos[0];
-                return new OopsInteger(c.getValor()*this.getValor());
-            case "/":
-                OopsInteger d = (OopsInteger) argumentos[0];
-                return new OopsInteger(d.getValor()/this.getValor());
-            case "<":
-                OopsInteger e = (OopsInteger) argumentos[0];
-                return new OopsBoolean(e.getValor()>this.getValor());
-            case ">":
-                OopsInteger f = (OopsInteger) argumentos[0];
-                return new OopsBoolean(f.getValor()<this.getValor());
-            case ">=":
-                OopsInteger g = (OopsInteger) argumentos[0];
-                return new OopsBoolean(g.getValor()<=this.getValor());
-            case "<=":
-                OopsInteger h = (OopsInteger) argumentos[0];
-                return new OopsBoolean(h.getValor()>=this.getValor());
-            case "==":
-                OopsInteger i = (OopsInteger) argumentos[0];
-                return new OopsBoolean(i.getValor()==this.getValor());
-            case "!=":
-                OopsInteger j = (OopsInteger) argumentos[0];
-                return new OopsBoolean(j.getValor()!=this.getValor());
+   @Override
+    public  OopsObject respond(String selector, OopsObject[] argumentos) {
+        OopsObject result = null;
+        OopsMethod temporal=OopsInteger.metodos.get(selector);
+        if (temporal!=null){
+            result = temporal.evaluate(this, argumentos);
         }
-        return null;     
+        return result;
     }
 
     @Override
     public String toString() {
-        return "OopsInteger{" + "valor=" + valor + '}';
+        return "Integer" + valor;
     }
     
     

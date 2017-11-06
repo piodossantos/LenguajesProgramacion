@@ -14,5 +14,12 @@ import Ejecucion.OopsObject;
  * @author pio
  */
 public abstract class OopsCode {
+    
    public abstract OopsObject evaluate(OopsState estado);
+
+    
+   @Override
+    public abstract String toString();
+    //To change body of generated methods, choose Tools | Templates.
+
 }

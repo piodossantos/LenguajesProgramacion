@@ -63,7 +63,11 @@ public class OopsMessage extends OopsCode {
 
     @Override
     public String toString() {
-        return "OopsMessage{" + "selector=" + selector + ", argumentos=" + argumentos + ", receptor=" + receptor + '}';
+        String args="";
+        for(OopsCode i: argumentos){
+            args+=i.toString()+",";
+        }
+        return selector + "(" + args.substring(0, args.length() - 1 ) + "," + receptor + ')';
     }
     
     

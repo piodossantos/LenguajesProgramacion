@@ -28,7 +28,7 @@ public class OopsBoolean extends OopsObject {
     }
     
     @Override
-    public OopsObject respond(String selector, OopsObject[] argumentos) {
+    public  OopsObject respond(String selector, OopsObject[] argumentos) {
         OopsObject result = null;
         OopsMethod temporal=OopsBoolean.metodos.get(selector);
         if (temporal!=null){
@@ -48,7 +48,7 @@ public class OopsBoolean extends OopsObject {
 
     @Override
     public String toString() {
-        return "OopsBoolean{" + "valor=" + valor + '}';
+        return "Boolean " + valor;
     }
     
     

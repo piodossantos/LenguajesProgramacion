@@ -28,5 +28,10 @@ public class OopsValor extends OopsCode {
     public OopsObject evaluate(OopsState estado) {
         return this.getValor();
     }
+
+    @Override
+    public String toString() {
+        return valor.toString() ;
+    }
     
 }

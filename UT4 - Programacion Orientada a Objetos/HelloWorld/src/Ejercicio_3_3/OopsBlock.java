@@ -1,34 +1,28 @@
-package RepresentacionCodigo;
-
-
-import Ejecucion.OopsObject;
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+package Ejercicio_3_3;
+
+import Ejecucion.OopsObject;
+import RepresentacionCodigo.OopsCode;
+import RepresentacionCodigo.OopsState;
+import java.util.HashMap;
 
 /**
  *
  * @author pio
  */
-public class OopsSequence extends OopsCode {
-
+public class OopsBlock extends OopsCode {
+    
     private OopsCode[] secuencia;
 
-    public OopsCode[] getPrueba() {
-        return secuencia;
-    }
-
-    public OopsSequence(OopsCode[] prueba) {
-        this.secuencia = prueba;
-    }
-    
-    
     @Override
-    public OopsObject evaluate(OopsState estado) {
-        //recorre todo y devuelve el resultado de la ultima secuencia. despues de haberlo evaluados todos
+    public OopsObject evaluate(OopsState estadoInicial) {
+        //Creo un nuevo contexto
+        OopsState estado = new OopsState(new HashMap<>(estadoInicial.getEstado()));
+        //Flujo normal
         for(int i=0;i<secuencia.length;i++){
           if(i==(secuencia.length-1)){
             return (OopsObject) secuencia[i].evaluate(estado);
@@ -40,11 +34,11 @@ public class OopsSequence extends OopsCode {
 
     @Override
     public String toString() {
-        String resultado="";
+        String salida="[ ";
         for(OopsCode c: this.secuencia){
-            resultado+= c.toString()+"\n";
+            salida+= c.toString()+". ";
         }
-        return resultado;
+        return salida.replace('\n', '.')+" ]";
     }
     
 }
