@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Ejercicio_3_3;
+package RepresentacionCodigo;
 
 import Ejecucion.OopsObject;
 import RepresentacionCodigo.OopsCode;

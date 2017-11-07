@@ -11,5 +11,15 @@ package Ejecucion;
  * @author pio
  */
 public abstract class OopsObject {
+   private final OopsClass clase;
+
+    public OopsObject(OopsClass clase) {
+        this.clase = clase;
+    }
+
+    public OopsClass getClase() {
+        return clase;
+    }
+   
    public abstract OopsObject respond(String selector,OopsObject[] argumentos);
 }

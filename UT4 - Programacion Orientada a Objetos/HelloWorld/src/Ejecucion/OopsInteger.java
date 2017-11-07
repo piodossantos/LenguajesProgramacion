@@ -17,23 +17,22 @@ import java.util.HashMap;
  */
 public class OopsInteger extends OopsObject {
     private final int valor;
-    private static final HashMap<String,OopsMethod> metodos = new HashMap<>();
-    static{
-        metodos.put("+", new OopsSuma("+"));
-        metodos.put("-", new OopsResta("-"));
-        metodos.put("*", new OopsProducto("*"));
-        metodos.put("/", new OopsDivision("/"));
-        metodos.put(">", new OopsMayor(">"));
-        metodos.put("<", new OopsMenor("<"));
-        metodos.put("<=", new OopsMenorIgual("<="));
-        metodos.put(">=", new OopsMayorIgual(">="));
-        metodos.put("==", new OopsIgual("=="));
-        metodos.put("!=", new OopsDistinto("!="));
-
-
-    }
 
     public OopsInteger(int valor) {
+        super( new OopsClass("OopsInteger",new HashMap(){
+            {
+                put("+", new OopsSuma("+"));
+                put("-", new OopsResta("-"));
+                put("*", new OopsProducto("*"));
+                put("/", new OopsDivision("/"));
+                put(">", new OopsMayor(">"));
+                put("<", new OopsMenor("<"));
+                put("<=", new OopsMenorIgual("<="));
+                put(">=", new OopsMayorIgual(">="));
+                put("==", new OopsIgual("=="));
+                put("!=", new OopsDistinto("!="));
+            }
+        }));
         this.valor = valor;
     }
 
@@ -45,7 +44,7 @@ public class OopsInteger extends OopsObject {
    @Override
     public  OopsObject respond(String selector, OopsObject[] argumentos) {
         OopsObject result = null;
-        OopsMethod temporal=OopsInteger.metodos.get(selector);
+        OopsMethod temporal=this.getClase().method(selector);
         if (temporal!=null){
             result = temporal.evaluate(this, argumentos);
         }
@@ -54,7 +53,7 @@ public class OopsInteger extends OopsObject {
 
     @Override
     public String toString() {
-        return "Integer" + valor;
+        return this.getClase().getIdentificador()+" " + valor;
     }
     
     

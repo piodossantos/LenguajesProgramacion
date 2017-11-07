@@ -20,17 +20,13 @@ public class OopsBoolean extends OopsObject {
   
     private final boolean valor;
     
-    private static final HashMap<String,OopsMethod> metodos = new HashMap<>();
-    static{
-        metodos.put("&", new OopsAnd("&"));
-        metodos.put("!", new OopsNot("!"));
-        metodos.put("|", new OopsOr("|"));
-    }
+    
+
     
     @Override
     public  OopsObject respond(String selector, OopsObject[] argumentos) {
         OopsObject result = null;
-        OopsMethod temporal=OopsBoolean.metodos.get(selector);
+        OopsMethod temporal=this.getClase().method(selector);
         if (temporal!=null){
             result = temporal.evaluate(this, argumentos);
         }
@@ -38,8 +34,23 @@ public class OopsBoolean extends OopsObject {
     }
     
     public OopsBoolean (boolean valor){
+        super( new OopsClass("OopsBoolean",new HashMap(){
+            {
+                put("&", new OopsAnd("&"));
+                put("!", new OopsNot("!"));
+                put("|", new OopsOr("|"));
+                put("ifTrue",new OopsIfTrue("ifTrue"));
+            }
+        }));
+        this.valor = valor;
+
+    }
+
+    public OopsBoolean(boolean valor, OopsClass clase) {
+        super(clase);
         this.valor = valor;
     }
+    
     
     public boolean getValor (){
         return valor;
@@ -48,7 +59,7 @@ public class OopsBoolean extends OopsObject {
 
     @Override
     public String toString() {
-        return "Boolean " + valor;
+        return this.getClase().getIdentificador()+" " + valor;
     }
     
     

@@ -13,11 +13,11 @@ import Ejecucion.OopsObject;
  *
  * @author pio
  */
-public class OopsAssignament extends OopsCode{
+public class OopsAssignment extends OopsCode{
     String identificador;
     OopsCode valor;
 
-    public OopsAssignament(String identificador, OopsCode valor) {
+    public OopsAssignment(String identificador, OopsCode valor) {
         this.identificador = identificador;
         this.valor = valor;
     }
@@ -49,6 +49,9 @@ public class OopsAssignament extends OopsCode{
     public String toString() {
         return identificador + " <- " + valor ;
     }
+
+
+
     
     
     
