@@ -27,8 +27,31 @@ public class NewMain {
             numeros.put(i,new OopsValor( new OopsInteger(i) ));
         }
         
+        System.out.println("Prueba Enteros");
+        OopsCode argINT[] = {numeros.get(3)};
+        OopsCode []lista_operacion_Enteros = {
+            new OopsMessage ("+",argINT,numeros.get(5)),
+            new OopsMessage ("-",argINT,numeros.get(5)),
+            new OopsMessage ("*",argINT,numeros.get(5)),
+            new OopsMessage ("/",argINT,numeros.get(5)),
+            new OopsMessage (">",argINT,numeros.get(5)),
+            new OopsMessage ("<",argINT,numeros.get(5)),
+            new OopsMessage ("<=",argINT,numeros.get(5)),
+            new OopsMessage (">=",argINT,numeros.get(5)),
+            new OopsMessage ("==",argINT,numeros.get(5)),
+            new OopsMessage ("!=",argINT,numeros.get(5)),
+        };
+        for(OopsCode m: lista_operacion_Enteros){
+            System.out.println(m.toString());
+            System.out.println(m.evaluate(new OopsState()).toString());
+        }
+        System.out.println("Secuencia");
+        OopsSequence si = new OopsSequence(lista_operacion_Enteros);
+        System.out.println(si.toString());
+        System.out.println(si.evaluate(new OopsState()).toString());
         
         //Test Booleanos
+        System.out.println("Prueba Booleanos");
         //Lista de Argumentos
         OopsCode argumentos[] = {booleanos.get("Verdadero")};
         //Mensajes
