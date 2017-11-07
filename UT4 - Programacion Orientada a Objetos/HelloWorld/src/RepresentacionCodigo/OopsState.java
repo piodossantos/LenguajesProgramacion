@@ -41,7 +41,7 @@ public class OopsState{
 
     @Override
     public String toString() {
-        return "OopsState{" + "estado=" + estado + '}';
+        return "OopsState "  + estado ;
     }
     
 }

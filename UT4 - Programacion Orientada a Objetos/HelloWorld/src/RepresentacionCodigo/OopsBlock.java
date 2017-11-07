@@ -18,6 +18,10 @@ public class OopsBlock extends OopsCode {
     
     private OopsCode[] secuencia;
 
+    public OopsBlock(OopsCode[] secuencia) {
+        this.secuencia = secuencia;
+    }
+
     @Override
     public OopsObject evaluate(OopsState estadoInicial) {
         //Creo un nuevo contexto
@@ -38,7 +42,7 @@ public class OopsBlock extends OopsCode {
         for(OopsCode c: this.secuencia){
             salida+= c.toString()+". ";
         }
-        return salida.replace('\n', '.')+" ]";
+        return salida.replace('\n', '.').substring(0, salida.length() -2 )+" ]";
     }
     
 }
