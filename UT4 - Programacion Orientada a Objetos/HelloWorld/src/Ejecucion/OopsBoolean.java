@@ -1,8 +1,7 @@
 package Ejecucion;
 
 
-import Ejecucion.OopsMethod;
-import Ejecucion.OopsObject;
+import EstadoPrograma.OopsState;
 import java.util.HashMap;
 
 /*
@@ -20,36 +19,30 @@ public class OopsBoolean extends OopsObject {
   
     private final boolean valor;
     
-    
+    public static final OopsClass CLASS = new OopsClass("OopsBoolean",new HashMap(){{
+            
+                put("&", new OopsAnd("&"));
+                put("!", new OopsNot("!"));
+                put("|", new OopsOr("|"));
+                put("IF",new OopsIF("IF"));
+            
+        }});
 
     
     @Override
-    public  OopsObject respond(String selector, OopsObject[] argumentos) {
+    public  OopsObject respond(OopsState estado, String selector, OopsObject[] argumentos) {
         OopsObject result = null;
-        OopsMethod temporal=this.getClase().method(selector);
+        OopsMethod temporal=OopsBoolean.CLASS.method(selector);
         if (temporal!=null){
-            result = temporal.evaluate(this, argumentos);
+            result = temporal.evaluate(estado,this, argumentos);
         }
         return result;
     }
     
     public OopsBoolean (boolean valor){
-        super( new OopsClass("OopsBoolean",new HashMap(){
-            {
-                put("&", new OopsAnd("&"));
-                put("!", new OopsNot("!"));
-                put("|", new OopsOr("|"));
-                put("ifTrue",new OopsIfTrue("ifTrue"));
-            }
-        }));
-        this.valor = valor;
-
-    }
-
-    public OopsBoolean(boolean valor, OopsClass clase) {
-        super(clase);
         this.valor = valor;
     }
+
     
     
     public boolean getValor (){
@@ -59,7 +52,7 @@ public class OopsBoolean extends OopsObject {
 
     @Override
     public String toString() {
-        return this.getClase().getIdentificador()+" " + valor;
+        return OopsBoolean.CLASS.getIdentificador()+" " + valor;
     }
     
     

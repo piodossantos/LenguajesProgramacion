@@ -1,6 +1,7 @@
 package RepresentacionCodigo;
 
 
+import EstadoPrograma.OopsState;
 import Ejecucion.OopsObject;
 
 /*
@@ -32,6 +33,11 @@ public class OopsValor extends OopsCode {
     @Override
     public String toString() {
         return valor.toString() ;
+    }
+
+    @Override
+    public OopsObject respond(OopsState estado, String selector, OopsObject[] argumentos) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

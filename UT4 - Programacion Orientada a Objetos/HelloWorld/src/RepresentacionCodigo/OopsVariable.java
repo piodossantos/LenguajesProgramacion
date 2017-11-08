@@ -1,6 +1,7 @@
 package RepresentacionCodigo;
 
 
+import EstadoPrograma.OopsState;
 import Ejecucion.OopsObject;
 
 
@@ -28,7 +29,7 @@ public class OopsVariable extends OopsCode {
 
     @Override
     public OopsObject evaluate(OopsState estado) {
-        return estado.getEstado().get(var);
+        return estado.getEstado().get(var).valor;
     }
 
     @Override

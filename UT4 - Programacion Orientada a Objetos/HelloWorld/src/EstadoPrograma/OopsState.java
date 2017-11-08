@@ -1,4 +1,4 @@
-package RepresentacionCodigo;
+package EstadoPrograma;
 
 
 
@@ -17,13 +17,13 @@ import java.util.HashMap;
  * @author pio
  */
 public class OopsState{
-    private HashMap<String,OopsObject> estado;
+    private HashMap<String,OopsCell> estado;
 
-    public HashMap<String, OopsObject> getEstado() {
+    public HashMap<String, OopsCell> getEstado() {
         return estado;
     }
 
-    public void setEstado(HashMap<String, OopsObject> estado) {
+    public void setEstado(HashMap<String, OopsCell> estado) {
         this.estado = estado;
     }
 
@@ -31,11 +31,11 @@ public class OopsState{
         this.estado=new HashMap<>();
     }
     
-    public OopsState(HashMap<String,OopsObject> estado) {
+    public OopsState(HashMap<String,OopsCell> estado) {
         this.estado = estado;
     }
     
-    public void put(String clave,OopsObject valor){
+    public void put(String clave,OopsCell valor){
         estado.put(clave, valor);
     }
 
@@ -43,5 +43,6 @@ public class OopsState{
     public String toString() {
         return "OopsState "  + estado ;
     }
-    
+
+
 }

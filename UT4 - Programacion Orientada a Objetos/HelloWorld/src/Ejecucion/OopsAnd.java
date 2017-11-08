@@ -1,8 +1,7 @@
 package Ejecucion;
 
 
-import Ejecucion.OopsMethod;
-import Ejecucion.OopsObject;
+import EstadoPrograma.OopsState;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -22,7 +21,7 @@ public class OopsAnd extends OopsMethod {
 
     
     @Override
-    public OopsObject evaluate(OopsObject self, OopsObject[] argumentos) {
+    public OopsObject evaluate(OopsState estado,OopsObject self, OopsObject[] argumentos) {
         return new OopsBoolean(((OopsBoolean)self).getValor()&&
                 ((OopsBoolean)argumentos[0]).getValor());
     }

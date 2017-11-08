@@ -1,6 +1,7 @@
 package RepresentacionCodigo;
 
 
+import EstadoPrograma.OopsState;
 import Ejecucion.OopsClass;
 import Ejecucion.OopsObject;
 
@@ -13,16 +14,14 @@ import Ejecucion.OopsObject;
 /**
  *
  * @author pio
- */
+ */ 
 public abstract class OopsCode extends OopsObject {
 
-    public OopsCode() {
-        super(new OopsClass("OopsCode",null));
-    }
-    
+   
+
     @Override
-    public OopsObject respond(String selector, OopsObject[] argumentos) {
-        return null;
+    public OopsObject respond(OopsState estado, String selector, OopsObject[] argumentos) {
+        throw new UnsupportedOperationException("Metodo NO Soportado."); 
     }
 
     

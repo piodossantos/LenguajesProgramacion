@@ -1,6 +1,8 @@
 package RepresentacionCodigo;
 
 
+import EstadoPrograma.OopsCell;
+import EstadoPrograma.OopsState;
 import Ejecucion.OopsObject;
 
 /*
@@ -40,9 +42,13 @@ public class OopsAssignment extends OopsCode{
     
     @Override
     public OopsObject evaluate(OopsState estado) {
-        OopsObject cualquiera = valor.evaluate(estado);
-        estado.getEstado().put(identificador, cualquiera);
-        return cualquiera;
+        OopsObject resultado = valor.evaluate(estado);
+        if(estado.getEstado().containsKey(identificador)){
+            estado.getEstado().get(identificador).valor=resultado;
+        }else{
+            estado.getEstado().put(identificador, new OopsCell(resultado));
+        }
+        return resultado;
     }
 
     @Override

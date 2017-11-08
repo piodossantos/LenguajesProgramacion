@@ -7,7 +7,7 @@ package RepresentacionCodigo;
 
 import Ejecucion.OopsObject;
 import RepresentacionCodigo.OopsCode;
-import RepresentacionCodigo.OopsState;
+import EstadoPrograma.OopsState;
 import java.util.HashMap;
 
 /**
@@ -16,7 +16,8 @@ import java.util.HashMap;
  */
 public class OopsBlock extends OopsCode {
     
-    private OopsCode[] secuencia;
+    public OopsCode[] secuencia;
+    public String[] argumentosFormales;
 
     public OopsBlock(OopsCode[] secuencia) {
         this.secuencia = secuencia;
@@ -26,6 +27,7 @@ public class OopsBlock extends OopsCode {
     public OopsObject evaluate(OopsState estadoInicial) {
         //Creo un nuevo contexto
         OopsState estado = new OopsState(new HashMap<>(estadoInicial.getEstado()));
+        
         //Flujo normal
         for(int i=0;i<secuencia.length;i++){
           if(i==(secuencia.length-1)){
@@ -44,5 +46,7 @@ public class OopsBlock extends OopsCode {
         }
         return salida.replace('\n', '.').substring(0, salida.length() -2 )+" ]";
     }
+
+
     
 }

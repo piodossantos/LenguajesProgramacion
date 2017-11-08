@@ -1,6 +1,7 @@
 package RepresentacionCodigo;
 
 
+import EstadoPrograma.OopsState;
 import Ejecucion.OopsObject;
 
 /*
@@ -45,6 +46,11 @@ public class OopsSequence extends OopsCode {
             resultado+= c.toString()+"\n";
         }
         return resultado;
+    }
+
+    @Override
+    public OopsObject respond(OopsState estado, String selector, OopsObject[] argumentos) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

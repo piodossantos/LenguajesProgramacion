@@ -1,5 +1,7 @@
 package Ejecucion;
 
+import EstadoPrograma.OopsState;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -11,15 +13,6 @@ package Ejecucion;
  * @author pio
  */
 public abstract class OopsObject {
-   private final OopsClass clase;
 
-    public OopsObject(OopsClass clase) {
-        this.clase = clase;
-    }
-
-    public OopsClass getClase() {
-        return clase;
-    }
-   
-   public abstract OopsObject respond(String selector,OopsObject[] argumentos);
+   public abstract OopsObject respond(OopsState estado, String selector,OopsObject[] argumentos);
 }

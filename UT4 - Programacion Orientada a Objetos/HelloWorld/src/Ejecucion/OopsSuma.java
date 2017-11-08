@@ -1,9 +1,7 @@
 package Ejecucion;
 
 
-import Ejecucion.OopsInteger;
-import Ejecucion.OopsMethod;
-import Ejecucion.OopsObject;
+import EstadoPrograma.OopsState;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -23,7 +21,7 @@ public class OopsSuma extends OopsMethod {
 
     
     @Override
-    public OopsObject evaluate(OopsObject self, OopsObject[] argumentos) {
+    public OopsObject evaluate(OopsState estado, OopsObject self, OopsObject[] argumentos) {
         return new OopsInteger(((OopsInteger)self).getValor()+((OopsInteger)argumentos[0]).getValor());
     }
     

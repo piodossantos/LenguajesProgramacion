@@ -1,8 +1,8 @@
+
 package Ejecucion;
 
 
-import Ejecucion.OopsMethod;
-import Ejecucion.OopsObject;
+import EstadoPrograma.OopsState;
 import java.util.HashMap;
 
 /*
@@ -17,11 +17,9 @@ import java.util.HashMap;
  */
 public class OopsInteger extends OopsObject {
     private final int valor;
-
-    public OopsInteger(int valor) {
-        super( new OopsClass("OopsInteger",new HashMap(){
-            {
-                put("+", new OopsSuma("+"));
+    public static final OopsClass CLASS = new OopsClass("OopsInteger",new HashMap(){{
+            
+          put("+", new OopsSuma("+"));
                 put("-", new OopsResta("-"));
                 put("*", new OopsProducto("*"));
                 put("/", new OopsDivision("/"));
@@ -31,8 +29,9 @@ public class OopsInteger extends OopsObject {
                 put(">=", new OopsMayorIgual(">="));
                 put("==", new OopsIgual("=="));
                 put("!=", new OopsDistinto("!="));
-            }
-        }));
+            
+        }});
+    public OopsInteger(int valor) {
         this.valor = valor;
     }
 
@@ -42,18 +41,18 @@ public class OopsInteger extends OopsObject {
 
 
    @Override
-    public  OopsObject respond(String selector, OopsObject[] argumentos) {
+    public  OopsObject respond(OopsState estado, String selector, OopsObject[] argumentos) {
         OopsObject result = null;
-        OopsMethod temporal=this.getClase().method(selector);
+        OopsMethod temporal=OopsInteger.CLASS.method(selector);
         if (temporal!=null){
-            result = temporal.evaluate(this, argumentos);
+            result = temporal.evaluate( estado, this, argumentos);
         }
         return result;
     }
 
     @Override
     public String toString() {
-        return this.getClase().getIdentificador()+" " + valor;
+        return OopsInteger.CLASS.getIdentificador()+" " + valor;
     }
     
     

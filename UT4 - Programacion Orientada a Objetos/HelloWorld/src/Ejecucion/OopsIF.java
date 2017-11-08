@@ -5,23 +5,27 @@
  */
 package Ejecucion;
 
+import EstadoPrograma.OopsState;
+import RepresentacionCodigo.OopsBlock;
+import RepresentacionCodigo.OopsCode;
+
 /**
  *
  * @author pio
  */
-public class OopsIfTrue extends OopsMethod{
+public class OopsIF extends OopsMethod{
 
-    public OopsIfTrue(String selector) {
+    public OopsIF(String selector) {
         super(selector);
     }
 
     @Override
-    public OopsObject evaluate(OopsObject self, OopsObject[] argumentos) {
-        OopsBoolean condicion = (OopsBoolean) argumentos[0];
-        if(condicion.getValor()==true){
-            return argumentos[1];
-        }
-        return null;
+    public OopsObject evaluate(OopsState estado, OopsObject self, OopsObject[] argumentos) {
+        OopsBoolean condicion = (OopsBoolean) self;
+        if(condicion.getValor())
+            return ((OopsBlock)argumentos[0]).evaluate(estado);
+        return ((OopsBlock)argumentos[1]).evaluate(estado);
+       
     }
     
 }

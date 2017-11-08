@@ -1,6 +1,7 @@
 package RepresentacionCodigo;
 
 
+import EstadoPrograma.OopsState;
 import Ejecucion.OopsObject;
 import java.util.TreeSet;
 
@@ -57,7 +58,7 @@ public class OopsMessage extends OopsCode {
         for(int i=0;i<args.length;i++){
             args[i]=this.getArgumentos()[i].evaluate(estado);
         }
-        return receptor.respond(selector, args);
+        return receptor.respond(estado,selector, args);
         //return this.getReceptor().respond(this.getSelector(), this.getArgumentos());
     }
 
@@ -67,7 +68,12 @@ public class OopsMessage extends OopsCode {
         for(OopsCode i: argumentos){
             args+=i.toString()+",";
         }
-        return selector + "(" + args.substring(0, args.length() - 1 ) + "," + receptor + ')';
+        return selector + "(" + receptor  + "," +  args.substring(0, args.length() - 1 )+ ')';
+    }
+
+    @Override
+    public OopsObject respond(OopsState estado, String selector, OopsObject[] argumentos) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     

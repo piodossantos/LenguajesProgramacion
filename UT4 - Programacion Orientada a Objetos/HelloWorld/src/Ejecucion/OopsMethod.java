@@ -1,7 +1,6 @@
 package Ejecucion;
 
-
-import Ejecucion.OopsObject;
+import EstadoPrograma.OopsState;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -24,5 +23,5 @@ public abstract class OopsMethod {
         return selector;
     }
    
-    public abstract OopsObject evaluate(OopsObject self,OopsObject[] argumentos);
+    public abstract OopsObject evaluate(OopsState estado, OopsObject self,OopsObject[] argumentos);
 }

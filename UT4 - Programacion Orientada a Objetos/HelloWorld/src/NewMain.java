@@ -1,5 +1,9 @@
 
+import EstadoPrograma.OopsState;
+import Ejecucion.OopsInteger;
+import Ejecucion.OopsObject;
 import Ejecucion. *;
+import EstadoPrograma.OopsCell;
 import RepresentacionCodigo.*;
 import java.util.HashMap;
 
@@ -26,11 +30,38 @@ public class NewMain {
         for(int i=0;i<100;i++){
             numeros.put(i,new OopsValor( new OopsInteger(i) ));
         }
-        //NewMain.pruebaPrimitivas(numeros, booleanos);
+        NewMain.pruebaPrimitivas(numeros, booleanos);
         NewMain.test2(numeros, booleanos);
+        NewMain.pruebaIf(numeros,booleanos);
+    }
+    public static void pruebaIf(HashMap<Integer,OopsValor> numeros, HashMap<String,OopsValor> booleanos){
+        System.out.print("\nPRUEBA IF : \n\n");
+        OopsAssignment a1 = new OopsAssignment("i", numeros.get(1));
+        OopsCode[] listaT = {new OopsAssignment("i", numeros.get(2))} ;
+        OopsCode[] listaF = {new OopsAssignment("i", numeros.get(3))} ;
+
+        OopsBlock iftrue = new OopsBlock (listaT);
+        OopsBlock ifFalse = new OopsBlock (listaF);
+        
+        OopsCode []ifTF = {new OopsValor(iftrue),new OopsValor(ifFalse)};
+        
+        OopsCode []lista_sec={a1,new OopsMessage("IF",ifTF,booleanos.get("Verdadero"))};
+                OopsSequence secuencia = new OopsSequence(lista_sec);
+                System.out.println("CASO TRUE");
+        System.out.println(secuencia.toString());
+        System.out.println(secuencia.evaluate(new OopsState()));
+        
+                OopsCode []lista_sec2={a1,new OopsMessage("IF",ifTF,booleanos.get("Falso"))};
+                OopsSequence secuencia2 = new OopsSequence(lista_sec2);
+                System.out.println("CASO FALSE");
+        System.out.println(secuencia2.toString());
+        System.out.println(secuencia2.evaluate(new OopsState()));
+        
+        
+        
     }
     public static void pruebaPrimitivas(HashMap<Integer,OopsValor> numeros, HashMap<String,OopsValor> booleanos){        
-        System.out.println("Prueba Enteros");
+        System.out.print("\nPRUEBA ENTEROS : \n\n");
         OopsCode argINT[] = {numeros.get(3)};
         OopsCode []lista_operacion_Enteros = {
             new OopsMessage ("+",argINT,numeros.get(5)),
@@ -48,13 +79,13 @@ public class NewMain {
             System.out.println(m.toString());
             System.out.println(m.evaluate(new OopsState()).toString());
         }
-        System.out.println("Secuencia");
+        System.out.println("Ejecucion anterior pero en Secuencia");
         OopsSequence si = new OopsSequence(lista_operacion_Enteros);
         System.out.println(si.toString());
         System.out.println(si.evaluate(new OopsState()).toString());
         
         //Test Booleanos
-        System.out.println("Prueba Booleanos");
+        System.out.print("\nPRUEBA BOOLEANOS : \n\n");
         //Lista de Argumentos
         OopsCode argumentos[] = {booleanos.get("Verdadero")};
         //Mensajes
@@ -73,7 +104,9 @@ public class NewMain {
     }
 
     private static void test2(HashMap<Integer, OopsValor> numeros, HashMap<String, OopsValor> booleanos) {
-        HashMap<String,OopsObject> elementos  = new HashMap<>();
+               System.out.print("\nPRUEBA ASIGNACIONES Y BLOQUE : \n\n");
+
+        HashMap<String,OopsCell> elementos  = new HashMap<>();
 
         //Inicial
         OopsAssignment a1 = new OopsAssignment("i",numeros.get(3));
